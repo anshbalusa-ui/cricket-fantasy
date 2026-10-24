@@ -25,21 +25,14 @@ Before promising live scoring:
 
 Stats availability is not permission to copy logos, photos, brand trademarks, broadcast footage or app designs. Start with original icons, text and authorized/placeholder imagery until rights are clear.
 
-## Competitors to study, not copy
+## Competitive reality
 
-There are already fantasy cricket products with private leagues, auctions or drafts, including:
-
-- CricBattle — https://rms.cricbattle.com/
-- DraftMates — https://draftmates.vercel.app/
-- The Cricket Draft — https://thecricketdraft.com/
-- Traditional per-match fantasy formats (e.g. Dream11)
-
-**Differentiation hypothesis:** a streamlined end-to-end experience emphasizing private leagues, exclusive ownership, simple onboarding, draft night, transparent matchup scoring, chat and season-long rivalries. This is a UX/community bet, **not** a claim that we are the first draft-based cricket fantasy app.
+Season-long, draft-based and private-league fantasy cricket experiences already exist. We should **not** claim this is the first such concept. Our differentiation hypothesis is a streamlined original interface, easy private league setup, exclusive draft-night ownership, clear matchup scoring and lasting social rivalries. This is a UX/community bet, not a claim that alternatives do not exist.
 
 ## Research checklist
 
 - Interview at least 10 commissioners or avid cricket fans.
 - Test whether they will invite friends and complete a mock draft.
-- Compare competitor user journeys, pricing/regions, app availability and retention, while respecting their intellectual property.
+- Review how existing products structure the experience without copying their IP.
 - Validate lineup/round fairness via real historical fixtures.
 - Verify privacy requirements, appropriate audience safety and platform age rules before launching accounts.
