@@ -15,12 +15,12 @@ Original brand / working title: Cricket Fantasy. Do not copy Sleeper marks, scre
 
 ## Navigation
 
-Marketing: Overview / How it works / Demo. Signed-in (future): My Leagues / Matchups / Players / Draft / League Settings. Mobile should keep critical actions reachable without deep menus.
+Marketing: Features / How it works / Prototype / My leagues / Sign in. Implemented app: Dashboard / My Leagues / Account, with create/join and private league overview/lobby routes. Matchups, players and multiplayer draft navigation are intentionally absent until those features exist. Mobile keeps working actions reachable without deep menus.
 
 ## Screen sequence
 
 1. Marketing hero explaining exclusive drafting and private leagues.
-2. League lobby with six manager slots, invite link, draft start state.
+2. Implemented league lobby with six manager slots, team names, commissioner identity, invitation lifecycle and explicit draft-not-implemented notice.
 3. Draft room with pick clock, available players, filters, pick history and on-clock manager.
 4. Roster with starter roles and bench.
 5. Matchup with score breakdown per player and provisional/final status.
@@ -30,3 +30,5 @@ Marketing: Overview / How it works / Demo. Signed-in (future): My Leagues / Matc
 ## Accessibility and trust
 
 Ensure keyboard access, visible focus, contrast, touch targets and descriptive icons. Never label example data as live. Clear loading, no-data and failed-sync states are required for data-integrated screens.
+
+M1 desktop/mobile flows were exercised against real local authentication/database services. Unconfigured auth shows setup guidance, invalid credentials/invites show actionable errors, unauthorized league URLs share the same not-found screen, and async forms expose pending states. Joined users see only their own leagues; invitation recipients see no private league details before membership.

@@ -10,7 +10,7 @@
 
 ## Quality checks
 
-After dependencies are installed, run the package scripts for type checks, tests, and build. Review the draft invariants and privacy implications for every database mutation. Historical or fictional data must be labeled as such.
+Use Node 22+ and `npm ci`, then run `npm run typecheck`, `npm test`, and `npm run build`. Database changes also require `npm run test:db` against the disposable database described in README (the harness deletes its test schemas). Review grants, RLS, cross-league privacy and concurrent mutations. CI has separate application and PostgreSQL jobs. Historical or fictional data must be labeled as such.
 
 ## Source attribution
 

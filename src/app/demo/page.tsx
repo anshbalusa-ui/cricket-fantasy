@@ -25,7 +25,7 @@ export default function DemoPage() {
         <section className="demo-outro">
           <span className="section-kicker">WHAT COMES NEXT</span>
           <h2>From preview to a real league.</h2>
-          <p>Persistent leagues, authenticated drafts, MLC player data, matchups, and season replay are the next milestones. Track progress in the GitHub repository.</p>
+          <p>Real accounts and private league lobbies are available with Supabase configured. Multiplayer drafting, MLC player data, matchups, and season replay are the next milestones.</p>
           <a className="button button-outline" href="https://github.com/anshbalusa-ui/cricket-fantasy" target="_blank" rel="noopener noreferrer">View project on GitHub ↗</a>
         </section>
       </main>

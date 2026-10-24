@@ -4,8 +4,9 @@ out/
 dist/
 coverage/
 *.tsbuildinfo
-.env
-.env.local
-.env.*.local
+.env*
+!.env.example
 .DS_Store
 .vercel/
+supabase/.temp/
+supabase/.branches/

@@ -10,7 +10,9 @@
 | D006 | Snake draft with exclusive per-league player ownership | Traditional league fantasy behavior | Accepted |
 | D007 | Average a starter's eligible match points within each fantasy round | Reduce extra-fixture advantage; must be historical-tested | Experimental |
 | D008 | 2026 historical MLC replay before live stats | Build deterministic quality while sourcing a live provider | Accepted |
-| D009 | Next.js/TypeScript plus planned Supabase and Vercel | Pragmatic stack for web + multiplayer | Accepted |
+| D009 | Next.js/TypeScript with Supabase Auth/Postgres; Vercel deployment target | Pragmatic stack for web + multiplayer | M1 local integration verified; hosting pending |
 | D010 | Do not copy Sleeper assets or pretend draft fantasy is unprecedented | Respect IP; differentiate on experience | Accepted |
+| D011 | User-scoped Supabase SSR clients plus RLS and transactional league RPCs | Keep private reads and commissioner/member mutations enforceable in the database without service keys | Implemented and locally verified in M1 |
+| D012 | Hash-only, expiring, rotating invitations; no pre-join league preview | Sharing convenience without exposing private league details or retaining raw credentials | Implemented and locally verified in M1 |
 
 Changes to accepted or experimental game rules should be documented here and versioned in scoring tests.

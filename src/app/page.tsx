@@ -21,7 +21,7 @@ export default function HomePage() {
               and catch into a season-long rivalry.
             </p>
             <div className="hero-actions">
-              <Link href="/demo" className="button button-primary">Explore the prototype <span aria-hidden="true">↗</span></Link>
+              <Link href="/dashboard" className="button button-primary">Build your league <span aria-hidden="true">↗</span></Link>
               <a href="#how" className="button button-text">See how it works <span aria-hidden="true">↓</span></a>
             </div>
             <p className="hero-disclaimer">Free private leagues • MLC first • IPL planned</p>
@@ -89,7 +89,7 @@ export default function HomePage() {
         <section className="section shell closing-section">
           <span className="section-kicker">BUILDING THE FIRST INNINGS</span>
           <h2>Every great rivalry<br />starts somewhere.</h2>
-          <p>The first preview uses fictional managers and stats. Real accounts, draft rooms and live scoring are on the roadmap.</p>
+          <p>Create a private league and invite your friends. Multiplayer drafting and historical scoring are next; the separate prototype uses fictional data.</p>
           <Link href="/demo" className="button button-primary">Try the demo mechanics <span aria-hidden="true">↗</span></Link>
         </section>
       </main>

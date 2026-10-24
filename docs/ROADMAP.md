@@ -13,12 +13,16 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [ ] Interview prospective commissioners/managers
 
 ## M1 — Web + identity + league creation — #1
-- [ ] Supabase project, migrations and session management
-- [ ] Auth, user profiles and league/team persistence
-- [ ] Create league, invite link, join/leave, six-person capacity
-- [ ] Authorization/RLS tests on all private tables
+- [x] Supabase migrations, typed clients and server-side cookie session management
+- [x] Auth, user profiles and league/team persistence
+- [x] Create league, invite link, join/leave, six-person capacity
+- [x] Authorization/RLS tests on all private tables and concurrent final-seat joins
+- [x] Dashboard, My Leagues, create/join, private overview/lobby and account screens
+- [ ] Connect a hosted Supabase project and configure production email delivery
 
 **Acceptance:** 6 distinct users can join one private league; uninvited users cannot view it.
+
+**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. Hosted Supabase and Vercel are not provisioned. See README for setup and verification details.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers
@@ -53,8 +57,10 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [ ] Production launch checklist and support channel
 
 ## Tooling — #8
-- [ ] Commit npm lockfile; CI uses npm ci
-- [ ] Live hosted preview and browser smoke test
+- [x] Commit npm lockfile; CI uses npm ci
+- [x] Local desktop/mobile browser smoke with actual authentication and database
+- [x] PostgreSQL RLS/concurrency test job in CI configuration (local command verified)
+- [ ] Live hosted preview
 
 ## Expansion, only after MLC alpha
 - [ ] IPL adapter and league configuration
