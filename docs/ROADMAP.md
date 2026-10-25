@@ -25,7 +25,7 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 
 **Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. Hosted Supabase and Vercel are not provisioned. See README for setup and verification details.
 
-**Infrastructure gate:** Supabase and Vercel CLIs/dashboards are unauthenticated. Organization/workspace choice, free-tier eligibility, hosted migrations/advisors, SMTP, actual environment values and a READY preview cannot be verified until normal provider access is authorized. No unrelated project or paid resource has been touched. Local follow-up passed 16 unit tests, four DB scenarios, builds, audit and security advisors; actual Auth/browser smoke proved the two deployment compatibility fixes.
+**Infrastructure gate:** provider sessions are not usable by this execution environment. The user completed CLI login and confirmed a signed-in browser relay, but CLI credentials remained unavailable and the installed relay returned HTTP 503 with no targets; the mismatch was reported. Organization/workspace choice, free-tier eligibility, hosted migrations/advisors, SMTP, actual environment values and a READY preview therefore remain unverified. No unrelated project or paid resource has been touched. Local follow-up passed 16 unit tests, four DB scenarios, builds, audit and security advisors; actual Auth/browser smoke proved the two deployment compatibility fixes. PR #9 was merged; main CI passed.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers
