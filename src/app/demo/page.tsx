@@ -1,35 +1,55 @@
+import "./demo.css";
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
+import { Brand, Badge, PageHeading } from "@/components/ui/primitives";
 import { DraftPlayground } from "@/components/demo/draft-playground";
 import { ScoringPlayground } from "@/components/demo/scoring-playground";
+import { ApplicationNavigation } from "@/components/application/navigation";
 
 export const metadata = {
-  title: "Prototype | Cricket Fantasy",
-  description: "Try a fictional snake draft and explore the cricket fantasy scoring rules.",
+  title: "Practice arena | Cricket Fantasy",
+  description:
+    "Explore a fictional local snake draft and the cricket fantasy scoring rules.",
 };
 
 export default function DemoPage() {
   return (
-    <>
-      <SiteHeader />
-      <main className="shell demo-main">
-        <div className="demo-intro">
-          <Link href="/" className="back-link">← Back home</Link>
-          <div className="eyebrow"><span className="pulse-dot" /> EARLY PRODUCT PROTOTYPE</div>
-          <h1>WELCOME TO<br /><span className="highlight">DRAFT NIGHT.</span></h1>
-          <p>A hands-on preview of how a cricket fantasy league could work. The players, teams and matchup values here are fictional; nothing connects to live MLC data or user accounts.</p>
+    <div className="demo-shell">
+      <a href="#practice-content" className="skip-link">
+        Skip to practice
+      </a>
+      <header className="demo-topbar">
+        <Brand compact />
+        <nav aria-label="Practice arena navigation">
+          <a href="#draft">Draft</a>
+          <a href="#scoring">Scoring</a>
+          <Link href="/dashboard">Your leagues</Link>
+        </nav>
+        <Badge tone="amber" dot>
+          FICTIONAL · LOCAL
+        </Badge>
+      </header>
+      <main id="practice-content" className="demo-content">
+        <PageHeading
+          eyebrow="PRACTICE ARENA"
+          title="The practice room."
+          description="Try a snake draft and explore cricket fantasy scoring. Your real leagues stay untouched."
+        />
+        <div className="demo-disclaimer">
+          <strong>Fictional players &amp; ratings.</strong>
+          <span>Local picks reset when you refresh.</span>
         </div>
-        <div className="demo-banner"><strong>Prototype, not a live game.</strong> This page demonstrates client-side draft order and scoring rules. Picks reset on refresh and are not saved.</div>
-        <DraftPlayground />
-        <ScoringPlayground />
-        <section className="demo-outro">
-          <span className="section-kicker">WHAT COMES NEXT</span>
-          <h2>From preview to a real league.</h2>
-          <p>Real accounts and private league lobbies are available with Supabase configured. Multiplayer drafting, MLC player data, matchups, and season replay are the next milestones.</p>
-          <a className="button button-outline" href="https://github.com/anshbalusa-ui/cricket-fantasy" target="_blank" rel="noopener noreferrer">View project on GitHub ↗</a>
-        </section>
+        <div id="draft">
+          <DraftPlayground />
+        </div>
+        <div id="scoring">
+          <ScoringPlayground />
+        </div>
+        <footer className="demo-footer">
+          <span>Cricket Fantasy · Practice arena</span>
+          <span>Fictional demonstration data · No live feed</span>
+        </footer>
       </main>
-      <footer className="footer shell"><span>© 2026 Cricket Fantasy</span><span>Demo data is fictional · Free-to-play concept</span></footer>
-    </>
+      <ApplicationNavigation surface="mobile" />
+    </div>
   );
 }

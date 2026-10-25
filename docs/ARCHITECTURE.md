@@ -6,9 +6,9 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 
 ## Intended stack
 
-- Frontend: Next.js App Router + React + TypeScript, custom responsive CSS.
-- Auth/database: Supabase Auth + Postgres with RLS. Dedicated Free project `irdolhsdemjugrsgfuuc` is provisioned in `us-west-1`; both migrations, hosted constraints/grants/RLS and anonymous API denial were verified. Successful hosted email/signup awaits Auth/SMTP setup.
-- Deployment: Vercel Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah` was created through the CLI's own normal login and linked to GitHub. Verified Next.js, Node 22.x, repository root and production branch `main`; other branches use preview deployments. App environment variables and hosted email/end-to-end readiness remain separate from this verified connection.
+- Frontend: Next.js App Router + React + TypeScript, custom responsive CSS, locally bundled variable Manrope and Lucide icons. Shared UI/navigation/fantasy presentation components support the public and protected surfaces.
+- Auth/database: Supabase Auth + Postgres with RLS. Existing Free project `irdolhsdemjugrsgfuuc` in `us-west-1` has both migrations, verified constraints/grants/RLS, active public client configuration and configured confirmation URLs. Default email delivery remains a separate acceptance/SMTP limitation.
+- Deployment: existing Vercel Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah`, configured through its authenticated local CLI. Next.js/Node 22.x, repository root, `main` production and automatic GitHub previews are verified; development/preview/production public variables and trusted system-preview origins are configured.
 - Tests: deterministic domain/validation tests and PostgreSQL constraint/RLS/concurrency scenarios; real local auth/browser smoke. End-to-end draft-room tests belong to M2.
 - Data: historical Cricsheet match records for replay; separately contracted/reviewed live provider when feasible.
 
@@ -27,6 +27,7 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 - `src/lib/auth` owns auth validation/actions and session checks; `src/lib/supabase` owns configuration and the typed server-only user client.
 - `src/proxy.ts` refreshes/validates claims and forwards refresh cookies/cache-control headers. Protected redirects preserve the original path/query. Server queries/actions independently validate the user with `getUser()` and database RLS remains authoritative.
 - Signup uses the trusted configured HTTPS origin in production. Vercel previews use only the provider-supplied `VERCEL_ENV=preview`/`VERCEL_URL` origin, never request headers; Supabase must separately allow that project's preview callback origins.
+- Confirmation supports two active provider protocols: standard PKCE code exchange for the hosted default mailer, and token-hash verification for the versioned local/custom-SMTP template. Credentials are mutually exclusive; both retain only a validated relative `next` destination. PKCE requires the same browser and exact signup origin.
 - `src/lib/users`, `src/lib/competitions`, and `src/lib/leagues` hold persistent profile/catalogue/league reads and league RPC actions. The existing `src/lib/fantasy` remains the pure draft/scoring engine.
 - All seven public tables have RLS. Catalogue reads require authentication. Profiles expose only the user's own/co-league display names. Invitations are commissioner-readable; raw secrets exist only in the creation response.
 - League mutations use narrowly granted, fixed-search-path security-definer RPCs with explicit identity/permission checks. The server never uses a service-role key.
@@ -35,6 +36,25 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 - Existing Auth accounts receive missing profiles via a forward-only backfill migration. New signups still initialize through the trigger; existing display names are preserved.
 - Hosted security advisors retain seven warnings for intentionally authenticated-callable SECURITY DEFINER RPCs. Actual grants revoke anonymous execution and direct league writes, fix every function's search path, and keep the trigger helper non-callable. Do not silence these warnings by disabling the required RPCs or claim zero hosted findings.
 - Draft, ingestion, lineup and matchup modules below remain planned, not simulated.
+
+### Hosted RPC security review
+
+The actual deployed definitions, owners, `search_path` settings and execution grants were reviewed, not inferred solely from migration text. All seven public RPCs explicitly reject missing `auth.uid()`, are owned by Postgres with `search_path = ''`, grant execution to `authenticated`, and deny `anon` and `PUBLIC` execution.
+
+| RPC | Explicit identity and league authorization |
+| --- | --- |
+| `create_league` | Binds the new commissioner membership and team to the authenticated caller; validates names and an existing season; creation is atomic. |
+| `join_league` | Authenticated caller must present an active, unexpired hashed invitation; locks the league and rechecks the invitation, lobby state, duplicate membership and capacity before atomically joining. |
+| `create_invitation` | Locks the league, requires that caller's commissioner membership and lobby state; rotates older links and returns a fresh secret only to the caller. |
+| `revoke_invitation` | Resolves and locks the invitation's league; requires that caller's commissioner membership before revocation. |
+| `rename_team` | Requires caller membership and updates only the team whose manager is `auth.uid()`; no arbitrary manager identity is accepted. |
+| `rename_league` | Locks the target league and requires that caller's commissioner membership and lobby state. |
+| `leave_league` | Locks the target league, requires caller membership and lobby state, forbids commissioner departure and deletes only that caller's membership. |
+
+The signup trigger helper is not callable by client roles. Private membership-policy helpers are caller-scoped and not exposed as public Data API RPCs. Database tests separately exercise grants, RLS, ownership, invitation transitions and concurrent final-seat admission. Real hosted anonymous reads and league creation returned HTTP 401 / `42501`.
+
+No genuine authorization defect requiring a new migration was found in this review. The seven advisor warnings remain visible because authenticated clients intentionally execute these narrowly authorized transactions. Replacing them with browser-side writes or revoking required authenticated execution would break authorized operations rather than improve the boundary.
+
 
 
 ## Import and scoring pipeline

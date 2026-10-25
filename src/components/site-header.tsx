@@ -1,20 +1,26 @@
 import Link from "next/link";
+import { Brand } from "@/components/ui/primitives";
 
 export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="shell header-inner">
-        <Link href="/" className="brand" aria-label="Cricket Fantasy home">
-          <span className="brand-mark" aria-hidden="true">C<span>F</span></span>
-          <span>CRICKET<span className="brand-light">FANTASY</span></span>
-        </Link>
+        <Brand />
         <nav className="nav-links" aria-label="Main navigation">
-          <Link href="/#features">Features</Link>
-          <Link href="/#how">How it works</Link>
-          <Link href="/demo">Prototype</Link>
-          <Link href="/dashboard">My leagues</Link>
+          <Link href="/demo">Practice</Link>
+          <Link href="/dashboard">Leagues</Link>
         </nav>
-        <Link href="/sign-in" className="button button-small button-outline">Sign in <span aria-hidden="true">↗</span></Link>
+        <div className="header-actions">
+          <Link href="/sign-in" className="header-signin">
+            Sign in
+          </Link>
+          <Link
+            href="/sign-up?next=%2Fleagues%2Fnew"
+            className="button button-primary button-small"
+          >
+            Create league
+          </Link>
+        </div>
       </div>
     </header>
   );

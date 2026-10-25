@@ -1,10 +1,81 @@
 import Link from "next/link";
+import {
+  Avatar,
+  Badge,
+  EmptyState,
+  PageHeading,
+  Panel,
+} from "@/components/ui/primitives";
+import { Icon } from "@/components/ui/icon";
 import { getMyLeagues } from "@/lib/leagues/queries";
 
 export default async function LeaguesPage() {
   const leagues = await getMyLeagues();
-  return <>
-    <div className="page-head"><div><span className="eyebrow">PRIVATE LEAGUES</span><h1>My leagues</h1><p>Only leagues you’ve joined appear here.</p></div><Link className="app-button" href="/leagues/new">Create a league</Link></div>
-    {leagues.length ? <section className="league-list" aria-label="Your leagues">{leagues.map((league) => <Link className="league-card-link" href={`/leagues/${league.id}`} key={league.id}><span><span className="league-card-title">{league.name}</span><span className="league-card-meta">{league.season.name} · {league.my_team_name} · {league.member_count}/{league.capacity} managers</span></span><span className={`status-pill ${league.status === "lobby" ? "status-lobby" : ""}`}>{league.status}</span></Link>)}</section> : <section className="app-card app-empty"><h2>You haven’t joined a league yet.</h2><p className="app-muted">Start your own private league or join using an invitation from a commissioner.</p><div className="app-grid app-grid-two" style={{ maxWidth: 480, margin: "22px auto 0" }}><Link href="/leagues/new" className="app-button">Create a league</Link><Link href="/join" className="app-button-secondary">Join a league</Link></div></section>}
-  </>;
+  return (
+    <div className="app-page">
+      <PageHeading
+        eyebrow="PRIVATE LEAGUES"
+        title="My leagues"
+        description="Only leagues you’ve joined appear here."
+        actions={
+          <span className="app-actions">
+            <Link className="button button-secondary" href="/join">
+              Join a league
+            </Link>
+            <Link className="button button-primary" href="/leagues/new">
+              <Icon name="plus" size={17} /> Create league
+            </Link>
+          </span>
+        }
+      />
+      <Panel
+        eyebrow="YOUR MEMBERSHIPS"
+        title={`${leagues.length} ${leagues.length === 1 ? "league" : "leagues"}`}
+      >
+        {leagues.length ? (
+          <div className="app-league-grid">
+            {leagues.map((league) => (
+              <Link
+                className="league-tile"
+                href={`/leagues/${league.id}`}
+                key={league.id}
+              >
+                <Avatar name={league.name} seed={league.id} size="lg" />
+                <span className="league-tile-copy">
+                  <strong>{league.name}</strong>
+                  <small>Your team · {league.my_team_name}</small>
+                  <span className="league-tile-meta">
+                    {league.season.name} · {league.member_count}/
+                    {league.capacity} managers
+                  </span>
+                </span>
+                <Badge
+                  tone={league.status === "lobby" ? "mint" : "neutral"}
+                  dot
+                >
+                  {league.status}
+                </Badge>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon="layers"
+            title="No leagues on your list yet"
+            description="Create a private league for your group, or join one with a commissioner’s invitation link."
+            action={
+              <span className="app-actions">
+                <Link className="button button-primary" href="/leagues/new">
+                  Create a league
+                </Link>
+                <Link className="button button-secondary" href="/join">
+                  Join with an invite
+                </Link>
+              </span>
+            }
+          />
+        )}
+      </Panel>
+    </div>
+  );
 }
