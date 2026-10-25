@@ -10,7 +10,7 @@
 
 ## Quality checks
 
-Use Node 22+ and `npm ci`, then run `npm run typecheck`, `npm test`, and `npm run build`. Database changes also require `npm run test:db` against the disposable database described in README (the harness deletes its test schemas). Review grants, RLS, cross-league privacy and concurrent mutations. CI has separate application and PostgreSQL jobs. Historical or fictional data must be labeled as such.
+Use Node 22.x and `npm ci`, then run `npm run typecheck`, `npm test`, `npm run build`, and `npm audit --omit=dev`. Database changes also require `npm run test:db` against the disposable loopback database described in README (the harness deletes its test schemas and rejects non-local hosts). Review grants, RLS, cross-league privacy and concurrent mutations. Use new forward migrations for existing installations; do not rewrite applied migrations or run destructive tests against hosted data. CI has separate application and PostgreSQL jobs. Historical or fictional data must be labeled as such.
 
 ## Source attribution
 

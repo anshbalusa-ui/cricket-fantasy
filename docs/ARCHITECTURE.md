@@ -8,7 +8,7 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 
 - Frontend: Next.js App Router + React + TypeScript, custom responsive CSS.
 - Auth/database: Supabase Auth + Postgres with row-level security; M1 implemented and verified against local native services. No hosted project connected.
-- Deployment: Vercel-ready Next.js build; no deployment connected or verified.
+- Deployment: explicit Next.js Vercel build configuration and Node 22.x engine. No hosted deployment is connected or verified; provider CLI/dashboard authorization is required.
 - Tests: deterministic domain/validation tests and PostgreSQL constraint/RLS/concurrency scenarios; real local auth/browser smoke. End-to-end draft-room tests belong to M2.
 - Data: historical Cricsheet match records for replay; separately contracted/reviewed live provider when feasible.
 
@@ -26,11 +26,13 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 
 - `src/lib/auth` owns auth validation/actions and session checks; `src/lib/supabase` owns configuration and the typed server-only user client.
 - `src/proxy.ts` refreshes/validates claims and forwards refresh cookies/cache-control headers. Protected redirects preserve the original path/query. Server queries/actions independently validate the user with `getUser()` and database RLS remains authoritative.
+- Signup uses the trusted configured HTTPS origin in production. Vercel previews use only the provider-supplied `VERCEL_ENV=preview`/`VERCEL_URL` origin, never request headers; Supabase must separately allow that project's preview callback origins.
 - `src/lib/users`, `src/lib/competitions`, and `src/lib/leagues` hold persistent profile/catalogue/league reads and league RPC actions. The existing `src/lib/fantasy` remains the pure draft/scoring engine.
 - All seven public tables have RLS. Catalogue reads require authentication. Profiles expose only the user's own/co-league display names. Invitations are commissioner-readable; raw secrets exist only in the creation response.
 - League mutations use narrowly granted, fixed-search-path security-definer RPCs with explicit identity/permission checks. The server never uses a service-role key.
 - Create atomically inserts the league, commissioner membership and team. Join/leave/invite mutations lock the league row. A join rechecks invitation state and expiry after locking and cannot exceed capacity.
 - Tokens contain 256 random bits, are stored only as SHA-256 hashes, expire after seven days and rotate by revoking older links. UUIDs identify competitions, seasons, users, leagues, memberships and teams separately.
+- Existing Auth accounts receive missing profiles via a forward-only backfill migration. New signups still initialize through the trigger; existing display names are preserved.
 - Draft, ingestion, lineup and matchup modules below remain planned, not simulated.
 
 

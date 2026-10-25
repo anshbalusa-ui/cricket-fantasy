@@ -1,6 +1,6 @@
 # Data model — M1 migrated, draft/scoring entities planned
 
-All application entity IDs are UUIDs. Actual cricket competitions remain separate from each user's fantasy league. The authoritative M1 schema is `supabase/migrations/20261024000000_m1_private_leagues.sql`; typed interfaces track it in `src/lib/supabase/database.types.ts`.
+All application entity IDs are UUIDs. Actual cricket competitions remain separate from each user's fantasy league. The authoritative M1 schema is `supabase/migrations/20261024000000_m1_private_leagues.sql`; `20261024000001_backfill_existing_profiles.sql` initializes missing profiles for pre-M1 Auth accounts without overwriting existing profiles. Typed interfaces track the schema in `src/lib/supabase/database.types.ts`.
 
 ## Cricket domain
 
@@ -19,7 +19,7 @@ All application entity IDs are UUIDs. Actual cricket competitions remain separat
 
 Implemented M1:
 
-- profiles(id = auth.users.id, display_name, created_at), initialized by Auth signup trigger
+- profiles(id = auth.users.id, display_name, created_at), initialized by Auth signup trigger or forward backfill for pre-M1 accounts
 - fantasy_leagues(id, season_id, name, commissioner_user_id, capacity, status, settings_version, scoring_version, created_at)
 - league_memberships(id, league_id, user_id, role, joined_at), unique (league_id, user_id), at most one commissioner
 - fantasy_teams(id, league_id, name, manager_user_id, created_at), unique (league_id, manager_user_id), composite FK to that membership

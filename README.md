@@ -15,7 +15,7 @@ Free, season-long, draft-based fantasy cricket for private groups. MLC first; th
 
 ## Run locally
 
-Use Node.js 22+ (`.nvmrc` selects 22) and npm. The committed lockfile is used by CI.
+Use Node.js 22.x (`.nvmrc` selects 22) and npm. The committed lockfile is used by CI; the explicit engine range keeps Vercel on the same tested major rather than selecting Node 24.
 
 ```sh
 npm ci
@@ -54,13 +54,13 @@ Open the local email inbox URL printed by `supabase status` to confirm test acco
 ### Option B: hosted Supabase
 
 1. Create a Supabase project. Get its project URL and publishable key from **Connect**.
-2. Authenticate the CLI and apply the migration to the intended project:
+2. Authenticate the CLI, inspect your organizations/projects, and apply the versioned migrations only to the dedicated `cricket-fantasy` project:
    ```sh
    npx supabase login
    npx supabase link --project-ref YOUR_PROJECT_REF
    npx supabase db push
    ```
-   Alternatively, run `supabase/migrations/20261024000000_m1_private_leagues.sql` in the project's SQL editor. Do not run the isolated test harness against this project.
+   The migration system applies `20261024000000_m1_private_leagues.sql` followed by `20261024000001_backfill_existing_profiles.sql`. The second migration initializes missing profiles for Auth accounts created before M1 without changing existing profiles. Inspect `npx supabase migration list --linked` before applying; never blindly replay the base migration or run the destructive test harness against a hosted project.
 3. Enable email/password signup and email confirmation. Set **Auth → URL Configuration → Site URL** to your trusted app origin. Allow your app's `/auth/confirm` callback, including its `next` query (for local development, `http://localhost:3000/**`). Use narrowly scoped production redirect URLs.
 4. Replace **Auth → Email Templates → Confirm signup** with `supabase/templates/confirmation.html`. Its link must be:
    ```html
@@ -70,7 +70,7 @@ Open the local email inbox URL printed by `supabase status` to confirm test acco
 5. Configure production SMTP and appropriate Supabase email/auth rate limits. The default hosted email service is not a production mail-delivery plan.
 6. Fill the three environment variables above and restart Next.js.
 
-No hosted project connection or deployment was available during implementation (`supabase projects list` reported no access token). Local verification does not claim a hosted rollout.
+Hosted setup is still blocked on account authorization: the Supabase CLI reported `AccessTokenRequiredError`, Vercel CLI reported logged out, and both dashboards required sign-in. GitHub repository administration is available, but the token cannot enumerate GitHub App installations (403), so Vercel's repository access must be checked after provider login. No dedicated project, reference, deployment URL, SMTP integration, or hosted environment setting has been created or verified. No unrelated/inactive project has been reused. Do not interpret local verification as a hosted rollout.
 
 ## Verification
 
@@ -80,28 +80,37 @@ npm test
 npm run build
 ```
 
-Database policies and concurrency require a **dedicated disposable PostgreSQL 17 database named exactly `cricket_fantasy_test`**, owned by a superuser:
+Database policies and concurrency require a **dedicated disposable PostgreSQL 17 database named exactly `cricket_fantasy_test` on localhost/loopback**, owned by a superuser:
 
 ```sh
 createdb cricket_fantasy_test
 TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/cricket_fantasy_test npm run test:db
 ```
 
-**Destructive test harness:** it refuses any other database name and drops/recreates the `public` and `private` schemas in that database. On plain Postgres it creates minimal test-only `auth.users`/`auth.uid()` fixtures; those fixtures are not an authentication implementation and never run in the app. Use only a disposable database with no valuable data. CI supplies a fresh PostgreSQL 17 service.
+**Destructive test harness:** it refuses any other database name or non-local hostname and drops/recreates the `public` and `private` schemas in that database. On plain Postgres it creates minimal test-only `auth.users`/`auth.uid()` fixtures; those fixtures are not an authentication implementation and never run in the app. Use only a disposable database with no valuable data. Never point it through a tunnel to hosted data. CI supplies a fresh PostgreSQL 17 service.
 
 Verified during implementation:
 
-- `npm ci`, TypeScript checking, 14 domain/validation tests, four database integration scenarios, and a production build without Supabase credentials. `npm audit --omit=dev` reported zero vulnerabilities and is included in CI.
+- Infrastructure follow-up: `npm ci`, TypeScript checking, **16** domain/validation tests, four PostgreSQL integration scenarios (including pre-M1 account backfill), and production builds both without credentials and with isolated local service configuration passed. `npm audit --omit=dev` reported zero vulnerabilities.
 - Real Supabase Auth v2.197.0 + PostgREST v16.5 + PostgreSQL 17.11 + Mailpit: seven email-confirmed accounts, six admitted to one league, seventh denied; wrong-password errors, sign-out, persistent navigation, invite-preserving signup/confirmation, private nonmember 404s, profile/team/league edits, leave/rejoin, duplicate rejection, invitation copy/revoke/regeneration, and member/commissioner boundaries.
 - Expired-session refresh: a real provider-issued 120-second access token expired; reloading the protected dashboard rotated both access/refresh tokens and retained authentication with an unexpired token.
 - Actual browser surfaces at desktop and 390px mobile; mobile landing/lobby had no horizontal overflow. The credential-free production server displayed setup guidance and protected redirects; its prototype advanced to pick two and changing runs increased the score from 106 to 107.
 - Database tests exercise table/RPC grants and RLS, own/co-member profile privacy, cross-league isolation, invitation format/expiry/revocation/rotation, duplicate membership, commissioner constraints, and competing joins for the final seat (exactly one admitted).
+- Follow-up browser smoke used actual native Auth/PostgREST/Postgres/Mailpit with a synthetic Vercel preview environment, not a Vercel deployment: the email link used the preview origin rather than the configured production origin and preserved the invitation destination. Its token was redeemed only on the local application. A real pre-migration account had zero profiles before the forward migration and one afterward, then successfully created a league. A second email-confirmed account joined; membership persisted on reload, and the 390px lobby had no horizontal overflow.
+- `supabase db advisors --db-url ... --type security --level info --fail-on error` reported no issues on the disposable local database. Hosted advisors, delivery, deployment logs and all deployed acceptance scenarios remain unverified until provider access is granted.
 
 ## Vercel readiness
 
-Import this repository as a Next.js project, use Node 22 and the three environment variables above, and set `NEXT_PUBLIC_SITE_URL` to the canonical HTTPS deployment origin. Configure the same origin/callback and confirmation template in Supabase; apply migrations before inviting users. Do not put authenticated responses behind shared caching. `src/proxy.ts` forwards session refresh cookies and cache-control headers.
+`vercel.json` configures Next.js, `npm ci --no-audit --no-fund`, `npm run build` and `npm run dev`; `package.json` pins the runtime to Node 22.x. After authorization, select the intended free/Hobby workspace, create or inspect only the dedicated `cricket-fantasy` project, and use the repository root (`.`). Confirm the Vercel GitHub App can access `anshbalusa-ui/cricket-fantasy`. Do not enable paid services or custom domains without approval.
 
-Public variables are embedded at build time: rebuild after changing the project URL/key. Preview environments need their own trusted origin/allowlist entries. A successful local production build is not a deployed application; **no Vercel deployment is claimed**.
+Configure the three environment variables above in development, preview and production using the dedicated project's actual URL/public key. Set the local development site origin to `http://localhost:3000`; set preview/production site origins to their verified HTTPS deployment origins. For previews, signup uses Vercel's system-provided `VERCEL_URL` when `VERCEL_ENV=preview` so an accidentally inherited production site URL cannot send preview users to production. Enable system environment variables. Incoming `Host`/forwarded-host headers are never trusted as the configured email origin.
+
+Apply migrations first. In Supabase, install the confirmation template, set the canonical production Site URL, and allow the exact initial preview `/auth/confirm` callback including its query. For automatic later branch previews, review a **project/workspace-specific** redirect pattern (not a global `*.vercel.app` wildcard); the generated domain and workspace slug must come from the actual Vercel project. Keep development redirects scoped to localhost.
+
+Deploy a **preview first** through the normal authenticated Vercel CLI/dashboard; verify its commit, READY state, origin, logs and all fourteen requested acceptance scenarios, including verified email delivery and seven distinct accounts. Connect/confirm Git integration with `main` as production and non-main branches as previews without initiating production before preview review. Public variables are embedded at build time: rebuild after changing them. Do not put authenticated responses behind shared caching; `src/proxy.ts` forwards refresh cookies and cache headers.
+
+Production launch also requires a verified SMTP sender/provider and rate limits within its approved quota. The default hosted email service is not suitable proof of production delivery; no SMTP provider, sender domain, billing approval or recipient delivery has been verified here. Obtain approval before creating any nonzero-cost resource. A passing local build is not a READY hosted deployment; **no Vercel deployment is claimed**.
+
 
 ## Code map
 

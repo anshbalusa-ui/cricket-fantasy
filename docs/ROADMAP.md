@@ -18,11 +18,14 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [x] Create league, invite link, join/leave, six-person capacity
 - [x] Authorization/RLS tests on all private tables and concurrent final-seat joins
 - [x] Dashboard, My Leagues, create/join, private overview/lobby and account screens
+- [x] Preview-origin confirmation handling, existing-account profile backfill, and explicit Node 22.x/Vercel build configuration
 - [ ] Connect a hosted Supabase project and configure production email delivery
 
 **Acceptance:** 6 distinct users can join one private league; uninvited users cannot view it.
 
 **Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. Hosted Supabase and Vercel are not provisioned. See README for setup and verification details.
+
+**Infrastructure gate:** Supabase and Vercel CLIs/dashboards are unauthenticated. Organization/workspace choice, free-tier eligibility, hosted migrations/advisors, SMTP, actual environment values and a READY preview cannot be verified until normal provider access is authorized. No unrelated project or paid resource has been touched. Local follow-up passed 16 unit tests, four DB scenarios, builds, audit and security advisors; actual Auth/browser smoke proved the two deployment compatibility fixes.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers

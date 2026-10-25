@@ -14,5 +14,6 @@
 | D010 | Do not copy Sleeper assets or pretend draft fantasy is unprecedented | Respect IP; differentiate on experience | Accepted |
 | D011 | User-scoped Supabase SSR clients plus RLS and transactional league RPCs | Keep private reads and commissioner/member mutations enforceable in the database without service keys | Implemented and locally verified in M1 |
 | D012 | Hash-only, expiring, rotating invitations; no pre-join league preview | Sharing convenience without exposing private league details or retaining raw credentials | Implemented and locally verified in M1 |
+| D013 | Pin Vercel/CI to Node 22.x; use only provider-generated preview origins for preview email callbacks | Avoid untested runtime upgrades and production-directed preview confirmations without trusting request headers | Locally verified; hosted setup blocked on authorization |
 
 Changes to accepted or experimental game rules should be documented here and versioned in scoring tests.
