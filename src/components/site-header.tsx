@@ -12,8 +12,9 @@ export function SiteHeader() {
           <Link href="/#features">Features</Link>
           <Link href="/#how">How it works</Link>
           <Link href="/demo">Prototype</Link>
+          <Link href="/dashboard">My leagues</Link>
         </nav>
-        <Link href="/demo" className="button button-small button-outline">Explore demo <span aria-hidden="true">↗</span></Link>
+        <Link href="/sign-in" className="button button-small button-outline">Sign in <span aria-hidden="true">↗</span></Link>
       </div>
     </header>
   );

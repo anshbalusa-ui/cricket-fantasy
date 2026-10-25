@@ -1,0 +1,64 @@
+.app-frame { min-height: 100vh; }
+.app-topbar { border-bottom: 1px solid var(--border); background: rgba(11,17,20,.94); }
+.app-topbar-inner { min-height: 72px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.app-brand { display:flex; align-items:center; gap:10px; font-weight:850; letter-spacing:.07em; font-size:13px; }
+.app-brand-mark { display:grid; place-items:center; width:34px; height:34px; border-radius:10px; background:var(--lime); color:#101713; font-size:13px; font-weight:900; letter-spacing:-.08em; }
+.app-brand-mark span { color:#536b2d; }
+.app-nav { display:flex; align-items:center; gap:8px; }
+.app-nav a,.app-nav .nav-signout { min-height:44px; display:flex; align-items:center; padding:0 14px; border-radius:10px; color:var(--muted); font-weight:650; }
+.app-nav a:hover,.app-nav a[aria-current="page"] { background:var(--card2); color:var(--ink); }
+.app-user-actions { display:flex; align-items:center; gap:10px; }
+.app-user-name { color:var(--muted); font-size:14px; }
+.app-signout { min-height:44px; border:1px solid var(--border); border-radius:10px; background:transparent; padding:0 14px; color:var(--ink); cursor:pointer; }
+.app-main { padding-top:40px; padding-bottom:72px; }
+.page-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:28px; }
+.page-head h1 { margin:6px 0 4px; font-size:clamp(30px,5vw,44px); line-height:1.08; letter-spacing:-.045em; }
+.page-head p,.page-copy { color:var(--muted); margin:0; }
+.eyebrow { color:var(--lime); font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+.app-button,.app-button-secondary,.app-button-danger { display:inline-flex; align-items:center; justify-content:center; min-height:46px; border-radius:11px; border:1px solid transparent; padding:0 18px; font:inherit; font-weight:750; cursor:pointer; text-decoration:none; }
+.app-button { background:var(--lime); color:#101713; }
+.app-button-secondary { color:var(--ink); border-color:var(--border); background:var(--card2); }
+.app-button-danger { color:#ffd1ca; border-color:#714038; background:#2a1d1c; }
+.app-button:hover { filter:brightness(1.06); }
+.app-button-secondary:hover,.app-button-danger:hover { border-color:var(--muted); }
+.app-button:disabled,.app-button-secondary:disabled,.app-button-danger:disabled { opacity:.6; cursor:not-allowed; }
+.app-card { border:1px solid var(--border); border-radius:16px; background:var(--card); padding:22px; }
+.app-card h2,.app-card h3 { margin-top:0; }
+.app-grid { display:grid; gap:16px; }
+.app-grid-two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.app-grid-three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.app-form { display:grid; gap:17px; }
+.app-field { display:grid; gap:7px; }
+.app-field label,.app-label { font-size:13px; font-weight:750; }
+.app-field input,.app-field select { width:100%; min-height:48px; padding:0 13px; border:1px solid var(--border); border-radius:10px; color:var(--ink); background:#0d1518; font:inherit; }
+.app-field input::placeholder { color:#72817b; }
+.app-help,.app-muted { color:var(--muted); font-size:14px; }
+.app-alert { border:1px solid #735540; border-radius:12px; background:#241c16; color:#f7d9b8; padding:13px 15px; }
+.app-alert-error { border-color:#75423c; background:#281a1a; color:#ffd1ca; }
+.app-empty { text-align:center; padding:44px 20px; }
+.app-empty h2 { margin:8px 0; }
+.league-list { display:grid; gap:12px; }
+.league-card-link { display:flex; align-items:center; justify-content:space-between; gap:18px; min-height:86px; padding:18px 20px; border:1px solid var(--border); border-radius:14px; background:var(--card); }
+.league-card-link:hover { border-color:#55645c; background:var(--card2); }
+.league-card-title { font-size:18px; font-weight:800; }
+.league-card-meta { color:var(--muted); font-size:13px; margin-top:4px; }
+.status-pill { display:inline-flex; align-items:center; min-height:28px; border:1px solid var(--border); border-radius:999px; padding:2px 10px; color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
+.status-lobby { color:var(--lime); border-color:#455934; background:#1b2618; }
+.slot-list { display:grid; gap:9px; }
+.member-slot { display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--border); border-radius:12px; background:#0e1619; }
+.member-avatar { display:grid; place-items:center; flex:0 0 36px; height:36px; border-radius:50%; background:#29363a; color:var(--lime); font-weight:850; }
+.member-info { min-width:0; flex:1; }
+.member-name,.member-team { display:block; }
+.member-name { font-weight:750; overflow-wrap:anywhere; }
+.member-team { color:var(--muted); font-size:13px; }
+.member-role { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.1em; }
+.lobby-layout { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr); gap:18px; align-items:start; }
+.invite-link { display:flex; gap:8px; }
+.invite-link input { min-width:0; flex:1; }
+.form-message { margin:0; color:#ffd1ca; font-size:14px; }
+.form-success { margin:0; color:var(--lime); font-size:14px; }
+.divider { border:0; border-top:1px solid var(--border); margin:20px 0; }
+.back-link { display:inline-flex; min-height:44px; align-items:center; color:var(--muted); font-weight:650; margin-bottom:12px; }
+.future-note { border-left:3px solid var(--violet); padding:12px 14px; color:var(--muted); background:#19172a; border-radius:0 10px 10px 0; }
+@media(max-width:760px) { .app-topbar-inner{flex-wrap:wrap;padding:12px 0;gap:8px}.app-nav{order:3;width:100%;overflow-x:auto}.app-nav a{padding:0 11px;white-space:nowrap}.app-user-name{display:none}.app-main{padding-top:28px}.lobby-layout{grid-template-columns:1fr}.app-grid-three{grid-template-columns:1fr 1fr} }
+@media(max-width:480px) { .shell{width:min(100% - 32px,1180px)}.app-topbar-inner{min-height:unset}.app-brand{font-size:11px}.app-nav{gap:2px}.app-nav a{font-size:13px;padding:0 9px}.app-signout{padding:0 10px;font-size:13px}.app-grid-two,.app-grid-three{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.app-card{padding:18px}.league-card-link{padding:15px;align-items:flex-start}.invite-link{flex-direction:column}.invite-link .app-button-secondary{width:100%} }
