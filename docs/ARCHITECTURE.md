@@ -8,7 +8,7 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 
 - Frontend: Next.js App Router + React + TypeScript, custom responsive CSS.
 - Auth/database: Supabase Auth + Postgres with RLS. Dedicated Free project `irdolhsdemjugrsgfuuc` is provisioned in `us-west-1`; both migrations, hosted constraints/grants/RLS and anonymous API denial were verified. Successful hosted email/signup awaits Auth/SMTP setup.
-- Deployment: explicit Next.js Vercel configuration and Node 22.x. The connected Vercel plugin verified Hobby workspace OWNER/GitHub access, but project creation returned 403; no hosted frontend is verified. CLI login is not a prerequisite for the working provider plugins.
+- Deployment: Vercel Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah` was created through the CLI's own normal login and linked to GitHub. Verified Next.js, Node 22.x, repository root and production branch `main`; other branches use preview deployments. App environment variables and hosted email/end-to-end readiness remain separate from this verified connection.
 - Tests: deterministic domain/validation tests and PostgreSQL constraint/RLS/concurrency scenarios; real local auth/browser smoke. End-to-end draft-room tests belong to M2.
 - Data: historical Cricsheet match records for replay; separately contracted/reviewed live provider when feasible.
 

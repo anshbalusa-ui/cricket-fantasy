@@ -20,13 +20,14 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [x] Dashboard, My Leagues, create/join, private overview/lobby and account screens
 - [x] Preview-origin confirmation handling, existing-account profile backfill, and explicit Node 22.x/Vercel build configuration
 - [x] Provision dedicated Free Supabase project and apply/verify both migrations through the connected plugin
+- [x] Create Vercel Hobby project through authenticated CLI, select Next.js/Node 22 and connect GitHub with `main` production tracking
 - [ ] Configure hosted confirmation template/redirects, production SMTP and verified email delivery
 
 **Acceptance:** 6 distinct users can join one private league; uninvited users cannot view it.
 
-**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. The dedicated hosted backend is now provisioned, but successful hosted email/signup and Vercel deployment remain unverified. See README for the distinction.
+**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. The dedicated hosted backend and Vercel Git project are provisioned; successful hosted email/signup and full deployed acceptance remain unverified.
 
-**Infrastructure gate:** connected Supabase/Vercel plugins are accessible independently of CLI/browser login. The user selected the personal Free organization; `cricket-fantasy` (`irdolhsdemjugrsgfuuc`, `us-west-1`) was created at a quoted $0/month. Both migration versions, seven-table RLS, constraints/grants and actual anonymous REST/RPC denial were verified. Hosted advisors retain seven reviewed, intentional authenticated SECURITY DEFINER RPC warnings. The real development `.env.local` is configured. Vercel plugin project creation returned **403 forbidden** despite verified Hobby workspace OWNER membership and GitHub admin/repository access; no frontend project/READY preview exists. Resolve that provider permission failure and configure hosted Auth/SMTP before all fourteen deployed acceptance checks. No unrelated project or paid resource was modified. PR #9 is merged and main CI passed; M2 is not started.
+**Infrastructure gate:** dedicated Free Supabase project `irdolhsdemjugrsgfuuc` is provisioned in `us-west-1` with both migrations, seven-table RLS, constraints/grants and anonymous API denial verified. Seven intentional authenticated SECURITY DEFINER warnings remain documented. The Vercel plugin's project-create 403 was resolved through the CLI's own normal browser authentication: Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah` now uses Next.js/Node 22 and links `anshbalusa-ui/cricket-fantasy`, with `main` production and other branches preview. No plan/purchase/unrelated-project changes. Development `.env.local` is configured; Vercel application variables, hosted Auth/SMTP and fourteen deployed acceptance checks remain separate work. M2 is not started.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers

@@ -10,10 +10,10 @@
 | D006 | Snake draft with exclusive per-league player ownership | Traditional league fantasy behavior | Accepted |
 | D007 | Average a starter's eligible match points within each fantasy round | Reduce extra-fixture advantage; must be historical-tested | Experimental |
 | D008 | 2026 historical MLC replay before live stats | Build deterministic quality while sourcing a live provider | Accepted |
-| D009 | Next.js/TypeScript with Supabase Auth/Postgres; Vercel deployment target | Pragmatic stack for web + multiplayer | Dedicated Free backend provisioned; frontend creation blocked by Vercel 403 |
+| D009 | Next.js/TypeScript with Supabase Auth/Postgres; Vercel deployment target | Pragmatic stack for web + multiplayer | Free backend and Vercel Hobby Git project provisioned; hosted Auth/end-to-end readiness pending |
 | D010 | Do not copy Sleeper assets or pretend draft fantasy is unprecedented | Respect IP; differentiate on experience | Accepted |
 | D011 | User-scoped Supabase SSR clients plus RLS and transactional league RPCs | Keep private reads and commissioner/member mutations enforceable in the database without service keys | Locally tested; hosted RLS/grants verified with seven intentional RPC advisor warnings |
 | D012 | Hash-only, expiring, rotating invitations; no pre-join league preview | Sharing convenience without exposing private league details or retaining raw credentials | Implemented and locally verified in M1 |
-| D013 | Pin Vercel/CI to Node 22.x; use only provider-generated preview origins for preview email callbacks | Avoid untested runtime upgrades and production-directed preview confirmations without trusting request headers | Locally verified; hosted frontend creation returns 403 through the accessible plugin |
+| D013 | Pin Vercel/CI to Node 22.x; use only provider-generated preview origins for preview email callbacks | Avoid untested runtime upgrades and production-directed preview confirmations without trusting request headers | CLI verified Next.js/Node 22 Git project; preview callback logic locally verified |
 
 Changes to accepted or experimental game rules should be documented here and versioned in scoring tests.
