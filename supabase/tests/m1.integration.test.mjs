@@ -7,11 +7,15 @@ import pg from 'pg';
 
 const { Client } = pg;
 const connectionString = process.env.TEST_DATABASE_URL;
-if (!connectionString) throw new Error('Set TEST_DATABASE_URL to a disposable PostgreSQL database named cricket_fantasy_test.');
-const databaseName = new URL(connectionString).pathname.slice(1);
+if (!connectionString) throw new Error('Set TEST_DATABASE_URL to a disposable local PostgreSQL database named cricket_fantasy_test.');
+const databaseUrl = new URL(connectionString);
+const databaseName = databaseUrl.pathname.slice(1);
+const hostname = databaseUrl.hostname.replace(/^\[|\]$/g, '').toLowerCase();
 if (databaseName !== 'cricket_fantasy_test') throw new Error(`Refusing destructive test setup for database ${databaseName}; expected cricket_fantasy_test.`);
+if (!['localhost', '127.0.0.1', '::1'].includes(hostname)) throw new Error(`Refusing destructive test setup for non-local PostgreSQL host ${hostname}.`);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const migration = await readFile(resolve(root, 'supabase/migrations/20261024000000_m1_private_leagues.sql'), 'utf8');
+const profileBackfill = await readFile(resolve(root, 'supabase/migrations/20261024000001_backfill_existing_profiles.sql'), 'utf8');
 let admin;
 let leagueId;
 let otherLeagueId;
@@ -69,9 +73,12 @@ before(async () => {
     grant execute on function auth.uid() to authenticated;
   `);
   await admin.query('delete from auth.users where id = any($1::uuid[])', [users]);
+  await admin.query('insert into auth.users(id,email,raw_user_meta_data) values($1,$2,$3)', [users[8], 'manager9@example.test', JSON.stringify({ display_name: 'An exceptionally long signup name that needs truncation' })]);
   await admin.query(migration);
+  await admin.query(profileBackfill);
   for (const [i, userId] of users.entries()) {
-    const displayName = i === 8 ? 'An exceptionally long signup name that needs truncation' : `Manager ${i + 1}`;
+    if (i === 8) continue;
+    const displayName = `Manager ${i + 1}`;
     await admin.query('insert into auth.users(id,email,raw_user_meta_data) values($1,$2,$3)', [userId, `manager${i + 1}@example.test`, JSON.stringify({ display_name: displayName })]);
   }
   const season = await admin.query("select id from public.seasons where name='MLC 2026'");
@@ -84,7 +91,7 @@ before(async () => {
 
 after(async () => { if (admin) await admin.end(); });
 
-test('signup trigger initializes profile; private rows and public metadata obey RLS', async () => {
+test('signup trigger and existing-account backfill initialize profiles; private rows and public metadata obey RLS', async () => {
   assert.equal((await admin.query('select display_name from public.profiles where id=$1', [users[0]])).rows[0].display_name, 'Manager 1');
   assert.equal((await admin.query('select char_length(display_name) from public.profiles where id=$1', [users[8]])).rows[0].char_length, 40);
   assert.match(invitation, /^[0-9a-f]{64}$/);

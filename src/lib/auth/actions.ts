@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { getPreviewSiteOrigin, isSupabaseConfigured } from "@/lib/supabase/env";
 import { requireUser } from "@/lib/auth/session";
 import { safeNextPath, validDisplayName, validEmail, validPassword, type AuthFormState } from "@/lib/auth/validation";
 
@@ -35,10 +35,11 @@ export async function signUp(_previous: AuthFormState, formData: FormData): Prom
   try {
     const supabase = await createClient();
     const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-    if (process.env.NODE_ENV === "production" && !configuredSiteUrl) {
+    const previewSiteUrl = getPreviewSiteOrigin();
+    if (process.env.NODE_ENV === "production" && !configuredSiteUrl && !previewSiteUrl) {
       return { error: "Account creation is not configured. Set NEXT_PUBLIC_SITE_URL to the trusted HTTPS site origin." };
     }
-    const siteUrl = configuredSiteUrl || "http://localhost:3000";
+    const siteUrl = previewSiteUrl || configuredSiteUrl || "http://localhost:3000";
     const parsedSiteUrl = new URL(siteUrl);
     if (
       parsedSiteUrl.username ||
