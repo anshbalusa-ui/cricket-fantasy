@@ -53,8 +53,8 @@ Open the local email inbox URL printed by `supabase status` to confirm test acco
 
 ### Option B: hosted Supabase
 
-1. Create a Supabase project. Get its project URL and publishable key from **Connect**.
-2. Authenticate the CLI, inspect your organizations/projects, and apply the versioned migrations only to the dedicated `cricket-fantasy` project:
+1. Prefer the existing connected Supabase app/plugin when available; its authentication is independent of Supabase CLI login. This repository's dedicated hosted project is recorded below. Do not create duplicates or reuse unrelated/inactive projects.
+2. Inspect migration history before applying changes. An authenticated CLI is an optional alternative to the connected plugin:
    ```sh
    npx supabase login
    npx supabase link --project-ref YOUR_PROJECT_REF
@@ -70,7 +70,24 @@ Open the local email inbox URL printed by `supabase status` to confirm test acco
 5. Configure production SMTP and appropriate Supabase email/auth rate limits. The default hosted email service is not a production mail-delivery plan.
 6. Fill the three environment variables above and restart Next.js.
 
-Hosted setup is still blocked by **credential/connection visibility in the execution environment**, not by an application test failure. After the user completed normal CLI login, these processes still reported Supabase `AccessTokenRequiredError` and Vercel logged out. The user then authorized a signed-in browser relay; the extension was installed and its badge reported on, but the matching relay on port 9224 still returned HTTP 503 and an empty target list. This connection mismatch was reported; no token values were requested and no persistent browser setting was changed. GitHub repository administration is available, but this token cannot enumerate GitHub App installations (403), so Vercel repository access must still be checked through usable provider access. No dedicated project/reference, deployment URL, SMTP integration or hosted environment values have been created or verified. No unrelated/inactive project was reused and no paid resource was enabled. Resolve the CLI credential profile/directory or browser attachment before any hosted mutation; do not interpret local verification as a hosted rollout.
+### Verified hosted backend
+
+| Setting | Verified value |
+| --- | --- |
+| Project | `cricket-fantasy` |
+| Project reference | `irdolhsdemjugrsgfuuc` |
+| API URL | `https://irdolhsdemjugrsgfuuc.supabase.co` |
+| Organization/region | User-selected personal Free organization; US West `us-west-1` |
+| Provisioning | `ACTIVE_HEALTHY`; creation quoted and confirmed at **$0/month** |
+| Migration history | `20261024000000` and `20261024000001`, matching the repository files |
+
+The connected Supabase plugin created this isolated project and applied both migration files verbatim to an initially empty public schema. MCP-generated execution timestamps were reconciled to the repository versions with guarded migration-metadata updates; application SQL/data were not rewritten. No destructive test harness was run on hosted data. The unrelated inactive project was left untouched.
+
+All seven public tables have RLS enabled; keys, membership/team uniqueness, the composite membership foreign key, one-commissioner index and table/column/function grants were verified. Real anonymous Data API reads and unauthenticated league mutations returned HTTP 401/permission denied. Hosted email/password signup is enabled and email confirmation is required.
+
+**Security advisor review:** hosted advisors report seven [authenticated SECURITY DEFINER warnings](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable), one for each intentionally callable transactional league RPC. These are retained, not suppressed: anonymous execution is revoked, every function has a fixed empty search path, and authorization/ownership checks remain mandatory. Direct league writes are denied. The trigger helper is not executable by client roles. Do not describe this as zero hosted warnings.
+
+The ignored `.env.local` is configured for this real development backend with the project URL, enabled modern publishable key and `http://localhost:3000` site origin; key values are not committed. Local sign-in UI and an actual hosted invalid-login response were exercised. **No hosted successful signup/email-delivery, six-manager user flow, production SMTP, or public frontend deployment is claimed.** URL allowlists, the versioned confirmation template, verified SMTP sender and delivery/rate limits still require configuration through an authorized management interface.
 
 ## Verification
 
@@ -97,11 +114,13 @@ Verified during implementation:
 - Actual browser surfaces at desktop and 390px mobile; mobile landing/lobby had no horizontal overflow. The credential-free production server displayed setup guidance and protected redirects; its prototype advanced to pick two and changing runs increased the score from 106 to 107.
 - Database tests exercise table/RPC grants and RLS, own/co-member profile privacy, cross-league isolation, invitation format/expiry/revocation/rotation, duplicate membership, commissioner constraints, and competing joins for the final seat (exactly one admitted).
 - Follow-up browser smoke used actual native Auth/PostgREST/Postgres/Mailpit with a synthetic Vercel preview environment, not a Vercel deployment: the email link used the preview origin rather than the configured production origin and preserved the invitation destination. Its token was redeemed only on the local application. A real pre-migration account had zero profiles before the forward migration and one afterward, then successfully created a league. A second email-confirmed account joined; membership persisted on reload, and the 390px lobby had no horizontal overflow.
-- `supabase db advisors --db-url ... --type security --level info --fail-on error` reported no issues on the disposable local database. Hosted advisors, delivery, deployment logs and all deployed acceptance scenarios remain unverified until provider access is granted.
+- Local security advisors reported no issues on the disposable native database. Hosted schema/grant/constraint checks and anonymous REST/RPC denial also passed on the dedicated project; hosted advisors retain the seven reviewed warnings above. Hosted successful email delivery, preview logs and all fourteen deployed acceptance scenarios remain pending.
 
 ## Vercel readiness
 
-`vercel.json` configures Next.js, `npm ci --no-audit --no-fund`, `npm run build` and `npm run dev`; `package.json` pins the runtime to Node 22.x. After authorization, select the intended free/Hobby workspace, create or inspect only the dedicated `cricket-fantasy` project, and use the repository root (`.`). Confirm the Vercel GitHub App can access `anshbalusa-ui/cricket-fantasy`. Do not enable paid services or custom domains without approval.
+`vercel.json` configures Next.js, `npm ci --no-audit --no-fund`, `npm run build` and `npm run dev`; `package.json` pins Node 22.x. The connected Vercel plugin verified Hobby workspace `anshbalusa-8318s-projects` (`team_qmNfWbzuAHUfyupp6Alq8SCr`), confirmed the user is an OWNER and can access GitHub repository `anshbalusa-ui/cricket-fantasy` as admin. Its authorized `create_git_project` request nevertheless returned **403 forbidden: permission to create the project**. A subsequent target-project listing was empty.
+
+This is an actual Vercel project-create permission failure, **not missing plugin or CLI authentication**. The exact provider-side cause is unresolved. No frontend project/deployment was created and no preview/production variables were set. Do not retry unchanged, assume reauthentication/paid upgrade fixes it, or deploy unrelated inline mock files. Resolve the Vercel permission failure through the account owner/provider, or use the mapped normal CLI fallback with that CLI's own authorized credentials and the same explicit workspace/repository. Do not bypass permissions or enable paid services/custom domains.
 
 Configure the three environment variables above in development, preview and production using the dedicated project's actual URL/public key. Set the local development site origin to `http://localhost:3000`; set preview/production site origins to their verified HTTPS deployment origins. For previews, signup uses Vercel's system-provided `VERCEL_URL` when `VERCEL_ENV=preview` so an accidentally inherited production site URL cannot send preview users to production. Enable system environment variables. Incoming `Host`/forwarded-host headers are never trusted as the configured email origin.
 

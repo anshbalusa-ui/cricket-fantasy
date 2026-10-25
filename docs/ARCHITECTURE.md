@@ -7,8 +7,8 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 ## Intended stack
 
 - Frontend: Next.js App Router + React + TypeScript, custom responsive CSS.
-- Auth/database: Supabase Auth + Postgres with row-level security; M1 implemented and verified against local native services. No hosted project connected.
-- Deployment: explicit Next.js Vercel build configuration and Node 22.x engine. No hosted deployment is connected or verified; provider CLI/dashboard authorization is required.
+- Auth/database: Supabase Auth + Postgres with RLS. Dedicated Free project `irdolhsdemjugrsgfuuc` is provisioned in `us-west-1`; both migrations, hosted constraints/grants/RLS and anonymous API denial were verified. Successful hosted email/signup awaits Auth/SMTP setup.
+- Deployment: explicit Next.js Vercel configuration and Node 22.x. The connected Vercel plugin verified Hobby workspace OWNER/GitHub access, but project creation returned 403; no hosted frontend is verified. CLI login is not a prerequisite for the working provider plugins.
 - Tests: deterministic domain/validation tests and PostgreSQL constraint/RLS/concurrency scenarios; real local auth/browser smoke. End-to-end draft-room tests belong to M2.
 - Data: historical Cricsheet match records for replay; separately contracted/reviewed live provider when feasible.
 
@@ -33,6 +33,7 @@ Ship **one mobile-first web application**, not a microservice fleet. Separate cr
 - Create atomically inserts the league, commissioner membership and team. Join/leave/invite mutations lock the league row. A join rechecks invitation state and expiry after locking and cannot exceed capacity.
 - Tokens contain 256 random bits, are stored only as SHA-256 hashes, expire after seven days and rotate by revoking older links. UUIDs identify competitions, seasons, users, leagues, memberships and teams separately.
 - Existing Auth accounts receive missing profiles via a forward-only backfill migration. New signups still initialize through the trigger; existing display names are preserved.
+- Hosted security advisors retain seven warnings for intentionally authenticated-callable SECURITY DEFINER RPCs. Actual grants revoke anonymous execution and direct league writes, fix every function's search path, and keep the trigger helper non-callable. Do not silence these warnings by disabling the required RPCs or claim zero hosted findings.
 - Draft, ingestion, lineup and matchup modules below remain planned, not simulated.
 
 

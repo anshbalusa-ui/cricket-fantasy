@@ -19,13 +19,14 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [x] Authorization/RLS tests on all private tables and concurrent final-seat joins
 - [x] Dashboard, My Leagues, create/join, private overview/lobby and account screens
 - [x] Preview-origin confirmation handling, existing-account profile backfill, and explicit Node 22.x/Vercel build configuration
-- [ ] Connect a hosted Supabase project and configure production email delivery
+- [x] Provision dedicated Free Supabase project and apply/verify both migrations through the connected plugin
+- [ ] Configure hosted confirmation template/redirects, production SMTP and verified email delivery
 
 **Acceptance:** 6 distinct users can join one private league; uninvited users cannot view it.
 
-**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. Hosted Supabase and Vercel are not provisioned. See README for setup and verification details.
+**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. The dedicated hosted backend is now provisioned, but successful hosted email/signup and Vercel deployment remain unverified. See README for the distinction.
 
-**Infrastructure gate:** provider sessions are not usable by this execution environment. The user completed CLI login and confirmed a signed-in browser relay, but CLI credentials remained unavailable and the installed relay returned HTTP 503 with no targets; the mismatch was reported. Organization/workspace choice, free-tier eligibility, hosted migrations/advisors, SMTP, actual environment values and a READY preview therefore remain unverified. No unrelated project or paid resource has been touched. Local follow-up passed 16 unit tests, four DB scenarios, builds, audit and security advisors; actual Auth/browser smoke proved the two deployment compatibility fixes. PR #9 was merged; main CI passed.
+**Infrastructure gate:** connected Supabase/Vercel plugins are accessible independently of CLI/browser login. The user selected the personal Free organization; `cricket-fantasy` (`irdolhsdemjugrsgfuuc`, `us-west-1`) was created at a quoted $0/month. Both migration versions, seven-table RLS, constraints/grants and actual anonymous REST/RPC denial were verified. Hosted advisors retain seven reviewed, intentional authenticated SECURITY DEFINER RPC warnings. The real development `.env.local` is configured. Vercel plugin project creation returned **403 forbidden** despite verified Hobby workspace OWNER membership and GitHub admin/repository access; no frontend project/READY preview exists. Resolve that provider permission failure and configure hosted Auth/SMTP before all fourteen deployed acceptance checks. No unrelated project or paid resource was modified. PR #9 is merged and main CI passed; M2 is not started.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers

@@ -62,4 +62,4 @@ Planned for M2 and later:
 
 ## Implementation gate
 
-M1 migrations and RLS/constraint/concurrency tests have run on PostgreSQL 17, and actual Auth/PostgREST/browser flows ran against a separate local database. For future migrations, consult current official docs and run the security tests before claiming readiness. A design file alone is not a secure database. Hosted setup remains an explicit deployment prerequisite.
+M1 migrations and RLS/constraint/concurrency tests have run on PostgreSQL 17, and real Auth/PostgREST/browser flows ran locally. Both migration versions are also applied to dedicated hosted project `irdolhsdemjugrsgfuuc`; hosted RLS, keys/constraints, grants and anonymous API denial were verified without destructive tests. The seven advisor warnings for authenticated SECURITY DEFINER RPCs are intentional and documented in README, not suppressed. Hosted email/signup and frontend acceptance remain pending Auth/SMTP configuration and resolution of Vercel's project-create 403. For future migrations, consult current official docs and run isolated security tests; never run the destructive harness against hosted data.
