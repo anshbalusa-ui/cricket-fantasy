@@ -19,13 +19,15 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [x] Authorization/RLS tests on all private tables and concurrent final-seat joins
 - [x] Dashboard, My Leagues, create/join, private overview/lobby and account screens
 - [x] Preview-origin confirmation handling, existing-account profile backfill, and explicit Node 22.x/Vercel build configuration
-- [ ] Connect a hosted Supabase project and configure production email delivery
+- [x] Provision dedicated Free Supabase project and apply/verify both migrations through the connected plugin
+- [x] Create Vercel Hobby project through authenticated CLI, select Next.js/Node 22 and connect GitHub with `main` production tracking
+- [ ] Configure hosted confirmation template/redirects, production SMTP and verified email delivery
 
 **Acceptance:** 6 distinct users can join one private league; uninvited users cannot view it.
 
-**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. Hosted Supabase and Vercel are not provisioned. See README for setup and verification details.
+**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. The dedicated hosted backend and Vercel Git project are provisioned; successful hosted email/signup and full deployed acceptance remain unverified.
 
-**Infrastructure gate:** Supabase and Vercel CLIs/dashboards are unauthenticated. Organization/workspace choice, free-tier eligibility, hosted migrations/advisors, SMTP, actual environment values and a READY preview cannot be verified until normal provider access is authorized. No unrelated project or paid resource has been touched. Local follow-up passed 16 unit tests, four DB scenarios, builds, audit and security advisors; actual Auth/browser smoke proved the two deployment compatibility fixes.
+**Infrastructure gate:** dedicated Free Supabase project `irdolhsdemjugrsgfuuc` is provisioned in `us-west-1` with both migrations, seven-table RLS, constraints/grants and anonymous API denial verified. Seven intentional authenticated SECURITY DEFINER warnings remain documented. The Vercel plugin's project-create 403 was resolved through the CLI's own normal browser authentication: Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah` now uses Next.js/Node 22 and links `anshbalusa-ui/cricket-fantasy`, with `main` production and other branches preview. No plan/purchase/unrelated-project changes. Development `.env.local` is configured; Vercel application variables, hosted Auth/SMTP and fourteen deployed acceptance checks remain separate work. M2 is not started.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers

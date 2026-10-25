@@ -53,8 +53,8 @@ Open the local email inbox URL printed by `supabase status` to confirm test acco
 
 ### Option B: hosted Supabase
 
-1. Create a Supabase project. Get its project URL and publishable key from **Connect**.
-2. Authenticate the CLI, inspect your organizations/projects, and apply the versioned migrations only to the dedicated `cricket-fantasy` project:
+1. Prefer the existing connected Supabase app/plugin when available; its authentication is independent of Supabase CLI login. This repository's dedicated hosted project is recorded below. Do not create duplicates or reuse unrelated/inactive projects.
+2. Inspect migration history before applying changes. An authenticated CLI is an optional alternative to the connected plugin:
    ```sh
    npx supabase login
    npx supabase link --project-ref YOUR_PROJECT_REF
@@ -70,7 +70,24 @@ Open the local email inbox URL printed by `supabase status` to confirm test acco
 5. Configure production SMTP and appropriate Supabase email/auth rate limits. The default hosted email service is not a production mail-delivery plan.
 6. Fill the three environment variables above and restart Next.js.
 
-Hosted setup is still blocked on account authorization: the Supabase CLI reported `AccessTokenRequiredError`, Vercel CLI reported logged out, and both dashboards required sign-in. GitHub repository administration is available, but the token cannot enumerate GitHub App installations (403), so Vercel's repository access must be checked after provider login. No dedicated project, reference, deployment URL, SMTP integration, or hosted environment setting has been created or verified. No unrelated/inactive project has been reused. Do not interpret local verification as a hosted rollout.
+### Verified hosted backend
+
+| Setting | Verified value |
+| --- | --- |
+| Project | `cricket-fantasy` |
+| Project reference | `irdolhsdemjugrsgfuuc` |
+| API URL | `https://irdolhsdemjugrsgfuuc.supabase.co` |
+| Organization/region | User-selected personal Free organization; US West `us-west-1` |
+| Provisioning | `ACTIVE_HEALTHY`; creation quoted and confirmed at **$0/month** |
+| Migration history | `20261024000000` and `20261024000001`, matching the repository files |
+
+The connected Supabase plugin created this isolated project and applied both migration files verbatim to an initially empty public schema. MCP-generated execution timestamps were reconciled to the repository versions with guarded migration-metadata updates; application SQL/data were not rewritten. No destructive test harness was run on hosted data. The unrelated inactive project was left untouched.
+
+All seven public tables have RLS enabled; keys, membership/team uniqueness, the composite membership foreign key, one-commissioner index and table/column/function grants were verified. Real anonymous Data API reads and unauthenticated league mutations returned HTTP 401/permission denied. Hosted email/password signup is enabled and email confirmation is required.
+
+**Security advisor review:** hosted advisors report seven [authenticated SECURITY DEFINER warnings](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable), one for each intentionally callable transactional league RPC. These are retained, not suppressed: anonymous execution is revoked, every function has a fixed empty search path, and authorization/ownership checks remain mandatory. Direct league writes are denied. The trigger helper is not executable by client roles. Do not describe this as zero hosted warnings.
+
+The ignored `.env.local` is configured for the real development backend with the project URL, enabled modern publishable key and `http://localhost:3000` site origin; key values are not committed. Local sign-in UI and an actual hosted invalid-login response were exercised. **Successful hosted signup/email-delivery, six-manager user flow and production SMTP remain unverified.** URL allowlists, the versioned confirmation template, verified SMTP sender and delivery/rate limits still require configuration through an authorized management interface.
 
 ## Verification
 
@@ -97,19 +114,23 @@ Verified during implementation:
 - Actual browser surfaces at desktop and 390px mobile; mobile landing/lobby had no horizontal overflow. The credential-free production server displayed setup guidance and protected redirects; its prototype advanced to pick two and changing runs increased the score from 106 to 107.
 - Database tests exercise table/RPC grants and RLS, own/co-member profile privacy, cross-league isolation, invitation format/expiry/revocation/rotation, duplicate membership, commissioner constraints, and competing joins for the final seat (exactly one admitted).
 - Follow-up browser smoke used actual native Auth/PostgREST/Postgres/Mailpit with a synthetic Vercel preview environment, not a Vercel deployment: the email link used the preview origin rather than the configured production origin and preserved the invitation destination. Its token was redeemed only on the local application. A real pre-migration account had zero profiles before the forward migration and one afterward, then successfully created a league. A second email-confirmed account joined; membership persisted on reload, and the 390px lobby had no horizontal overflow.
-- `supabase db advisors --db-url ... --type security --level info --fail-on error` reported no issues on the disposable local database. Hosted advisors, delivery, deployment logs and all deployed acceptance scenarios remain unverified until provider access is granted.
+- Local security advisors reported no issues on the disposable native database. Hosted schema/grant/constraint checks and anonymous REST/RPC denial also passed on the dedicated project; hosted advisors retain the seven reviewed warnings above. Hosted successful email delivery, preview logs and all fourteen deployed acceptance scenarios remain pending.
 
-## Vercel readiness
+## Vercel project and Git connection
 
-`vercel.json` configures Next.js, `npm ci --no-audit --no-fund`, `npm run build` and `npm run dev`; `package.json` pins the runtime to Node 22.x. After authorization, select the intended free/Hobby workspace, create or inspect only the dedicated `cricket-fantasy` project, and use the repository root (`.`). Confirm the Vercel GitHub App can access `anshbalusa-ui/cricket-fantasy`. Do not enable paid services or custom domains without approval.
+The locally authenticated Vercel CLI created `cricket-fantasy` (`prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah`) in existing Hobby workspace `anshbalusa-8318s-projects`. [Project dashboard](https://vercel.com/anshbalusa-8318s-projects/cricket-fantasy). Verified project settings are Next.js, Node `22.x`, and repository root. The Git link targets `anshbalusa-ui/cricket-fantasy` on GitHub with production branch `main`; other branches use previews. Vercel's default `git.deploymentEnabled=true` is unchanged, and the repository does not disable it.
+
+The earlier ChatGPT integration project-create 403 was resolved by using the separately authenticated CLI's normal browser device flow and own credentials, not by bypassing permissions or changing the plan. Only the requested project was created/configured; no purchase, paid feature, plan change or unrelated project mutation occurred. `vercel.json` retains the Next.js build/install commands. Project/Git connection is verified; application environment variables and hosted email readiness remain separate setup work.
+
+The first automatic Git push (`26f137480dae6c9b48984b6c79460d36f3e5c736`) produced deployment `dpl_5XEc76opaqRkSKhLxFXXV7BfSr1J` in `READY` state. Its assigned [website URL](https://cricket-fantasy-two.vercel.app) serves the landing page. This verifies the Git deployment hook and build, not hosted authentication/email readiness.
 
 Configure the three environment variables above in development, preview and production using the dedicated project's actual URL/public key. Set the local development site origin to `http://localhost:3000`; set preview/production site origins to their verified HTTPS deployment origins. For previews, signup uses Vercel's system-provided `VERCEL_URL` when `VERCEL_ENV=preview` so an accidentally inherited production site URL cannot send preview users to production. Enable system environment variables. Incoming `Host`/forwarded-host headers are never trusted as the configured email origin.
 
 Apply migrations first. In Supabase, install the confirmation template, set the canonical production Site URL, and allow the exact initial preview `/auth/confirm` callback including its query. For automatic later branch previews, review a **project/workspace-specific** redirect pattern (not a global `*.vercel.app` wildcard); the generated domain and workspace slug must come from the actual Vercel project. Keep development redirects scoped to localhost.
 
-Deploy a **preview first** through the normal authenticated Vercel CLI/dashboard; verify its commit, READY state, origin, logs and all fourteen requested acceptance scenarios, including verified email delivery and seven distinct accounts. Connect/confirm Git integration with `main` as production and non-main branches as previews without initiating production before preview review. Public variables are embedded at build time: rebuild after changing them. Do not put authenticated responses behind shared caching; `src/proxy.ts` forwards refresh cookies and cache headers.
+Vercel's [first deployment of a new project is always production](https://vercel.com/docs/deployments/environments#first-deployment), even from a non-main branch or an explicit preview request. Treat that initial deployment as infrastructure bootstrap, not approved application launch. Subsequent non-main pushes create previews. Configure the application variables first, then verify a subsequent preview's commit, READY state, origin, logs and all fourteen requested functional scenarios, including email delivery and seven accounts, before declaring launch readiness. Public variables are embedded at build time: rebuild after changing them. Do not use shared caching for authenticated responses; `src/proxy.ts` forwards refresh cookies and cache headers.
 
-Production launch also requires a verified SMTP sender/provider and rate limits within its approved quota. The default hosted email service is not suitable proof of production delivery; no SMTP provider, sender domain, billing approval or recipient delivery has been verified here. Obtain approval before creating any nonzero-cost resource. A passing local build is not a READY hosted deployment; **no Vercel deployment is claimed**.
+Production launch also requires a verified SMTP sender/provider and rate limits within its approved quota. The default hosted email service is not suitable proof of production delivery; no SMTP provider, sender domain, billing approval or recipient delivery has been verified here. Obtain approval before creating any nonzero-cost resource. Creating/linking the Vercel project does not imply production or email readiness.
 
 
 ## Code map
