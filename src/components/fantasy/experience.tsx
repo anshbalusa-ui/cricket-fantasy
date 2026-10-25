@@ -37,7 +37,7 @@ export function PlayerIdentity({
     <div className="fantasy-player-identity">
       <Avatar name={name} seed={seed} size="md" />
       <span>
-        <strong>{name}</strong>
+        <strong title={name}>{name}</strong>
         <small>{team}</small>
       </span>
       {role && <RoleBadge role={role} />}
@@ -56,7 +56,12 @@ export function RosterRows({
     <ul className="fantasy-roster-rows">
       {players.map((player) => (
         <li key={player.id}>
-          <PlayerIdentity {...player} />
+          <PlayerIdentity
+            name={player.name}
+            team={player.team}
+            role={player.role}
+            seed={player.id}
+          />
         </li>
       ))}
     </ul>
@@ -119,11 +124,9 @@ export function RosterPreview({
                 assigned after draft
               </small>
             </span>
-            <span
-              className="fantasy-slot-points"
-              aria-label="Points unavailable"
-            >
-              —
+            <span className="fantasy-slot-points">
+              <span aria-hidden="true">—</span>
+              <span className="sr-only">Points unavailable</span>
             </span>
           </li>
         ))}
@@ -152,11 +155,9 @@ export function RosterPreview({
                   <strong>Bench spot {slot}</strong>
                   <small>Reserve player · assigned after draft</small>
                 </span>
-                <span
-                  className="fantasy-slot-points"
-                  aria-label="Points unavailable"
-                >
-                  —
+                <span className="fantasy-slot-points">
+                  <span aria-hidden="true">—</span>
+                  <span className="sr-only">Points unavailable</span>
                 </span>
               </li>
             ))}
@@ -200,9 +201,15 @@ export function MatchupPreview({ teamName }: { teamName?: string }) {
         </div>
       </div>
       <div className="fantasy-matchup-score">
-        <strong aria-label="Your score unavailable">—</strong>
+        <strong>
+          <span aria-hidden="true">—</span>
+          <span className="sr-only">Your score unavailable</span>
+        </strong>
         <span>FANTASY POINTS</span>
-        <strong aria-label="Opponent score unavailable">—</strong>
+        <strong>
+          <span aria-hidden="true">—</span>
+          <span className="sr-only">Opponent score unavailable</span>
+        </strong>
       </div>
       <div className="fantasy-contributions">
         <Icon name="activity" size={17} />

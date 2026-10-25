@@ -18,6 +18,8 @@ export function AuthForm({
   const action = mode === "sign-in" ? signIn : signUp;
   const [state, formAction] = useActionState(action, initialState);
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
   return (
     <form action={formAction} className="auth-form">
       {mode === "sign-up" && (
@@ -27,6 +29,8 @@ export function AuthForm({
             id="displayName"
             name="displayName"
             autoComplete="name"
+            value={displayName}
+            onChange={(event) => setDisplayName(event.target.value)}
             minLength={1}
             maxLength={40}
             required
@@ -40,6 +44,8 @@ export function AuthForm({
           name="email"
           type="email"
           autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
           maxLength={254}
           required
         />

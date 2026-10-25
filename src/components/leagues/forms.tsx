@@ -41,13 +41,23 @@ export function CreateLeagueForm({
   }[];
 }) {
   const [state, action] = useActionState(createLeague, initialState);
+  const [leagueName, setLeagueName] = useState("");
+  const [teamName, setTeamName] = useState("");
+  const [seasonId, setSeasonId] = useState("");
+  // Server-action validation failures must not reset the controlled season.
   return (
-    <form action={action} className="app-form">
+    <form
+      action={action}
+      className="app-form"
+      onReset={(event) => event.preventDefault()}
+    >
       <div className="app-field">
         <label htmlFor="leagueName">League name</label>
         <input
           id="leagueName"
           name="leagueName"
+          value={leagueName}
+          onChange={(event) => setLeagueName(event.currentTarget.value)}
           autoComplete="off"
           maxLength={60}
           required
@@ -62,6 +72,8 @@ export function CreateLeagueForm({
         <input
           id="teamName"
           name="teamName"
+          value={teamName}
+          onChange={(event) => setTeamName(event.currentTarget.value)}
           autoComplete="off"
           maxLength={40}
           required
@@ -73,7 +85,13 @@ export function CreateLeagueForm({
       </div>
       <div className="app-field">
         <label htmlFor="seasonId">Competition season</label>
-        <select id="seasonId" name="seasonId" required defaultValue="">
+        <select
+          id="seasonId"
+          name="seasonId"
+          required
+          value={seasonId}
+          onChange={(event) => setSeasonId(event.currentTarget.value)}
+        >
           <option value="" disabled>
             Select a season
           </option>
@@ -101,6 +119,8 @@ export function CreateLeagueForm({
 
 export function JoinLeagueForm({ token }: { token: string }) {
   const [state, action] = useActionState(joinLeague, initialState);
+  const [invitationToken, setInvitationToken] = useState(token);
+  const [teamName, setTeamName] = useState("");
   return (
     <form action={action} className="app-form">
       <div className="app-field">
@@ -110,7 +130,8 @@ export function JoinLeagueForm({ token }: { token: string }) {
           name="token"
           autoComplete="off"
           spellCheck={false}
-          defaultValue={token}
+          value={invitationToken}
+          onChange={(event) => setInvitationToken(event.currentTarget.value)}
           required
           pattern="[a-f0-9]{64}"
           maxLength={64}
@@ -126,6 +147,8 @@ export function JoinLeagueForm({ token }: { token: string }) {
         <input
           id="teamName"
           name="teamName"
+          value={teamName}
+          onChange={(event) => setTeamName(event.currentTarget.value)}
           autoComplete="off"
           maxLength={40}
           required
@@ -154,6 +177,7 @@ export function RenameTeamForm({
     renameTeam.bind(null, leagueId),
     initialState,
   );
+  const [teamName, setTeamName] = useState(currentName);
   return (
     <form action={action} className="app-form">
       <div className="app-field">
@@ -161,7 +185,8 @@ export function RenameTeamForm({
         <input
           id={`teamName-${leagueId}`}
           name="teamName"
-          defaultValue={currentName}
+          value={teamName}
+          onChange={(event) => setTeamName(event.currentTarget.value)}
           maxLength={40}
           required
         />
@@ -185,6 +210,7 @@ export function RenameLeagueForm({
     renameLeague.bind(null, leagueId),
     initialState,
   );
+  const [leagueName, setLeagueName] = useState(currentName);
   return (
     <form action={action} className="app-form">
       <div className="app-field">
@@ -192,7 +218,8 @@ export function RenameLeagueForm({
         <input
           id={`leagueName-${leagueId}`}
           name="leagueName"
-          defaultValue={currentName}
+          value={leagueName}
+          onChange={(event) => setLeagueName(event.currentTarget.value)}
           maxLength={60}
           required
         />

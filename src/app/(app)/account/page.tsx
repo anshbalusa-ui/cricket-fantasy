@@ -36,7 +36,7 @@ export default async function AccountPage({
       <div className="account-grid">
         <Panel eyebrow="PROFILE" title="Manager identity">
           <div className="account-identity">
-            <Avatar name={displayName} size="xl" />
+            <Avatar name={displayName} seed={profile.id} size="xl" />
             <div>
               <strong>{displayName}</strong>
               <span>Shown to your league managers</span>

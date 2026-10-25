@@ -247,6 +247,9 @@
 }
 .fantasy-player-identity strong {
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .fantasy-player-identity small {
   color: var(--muted);

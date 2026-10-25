@@ -30,7 +30,7 @@ export default async function ApplicationLayout({
         </div>
         <ApplicationNavigation surface="sidebar" />
         <div className="sidebar-account">
-          <Avatar name={displayName} size="md" />
+          <Avatar name={displayName} seed={profile.id} size="md" />
           <span className="sidebar-account-copy">
             <strong>{displayName}</strong>
             <small>Manager account</small>
@@ -58,7 +58,7 @@ export default async function ApplicationLayout({
             href="/account"
             aria-label={`Account for ${displayName}`}
           >
-            <Avatar name={displayName} size="sm" />
+            <Avatar name={displayName} seed={profile.id} size="sm" />
           </Link>
         </header>
         <main id="main-content" className="app-main">

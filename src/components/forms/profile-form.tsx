@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { updateDisplayName } from "@/lib/auth/actions";
 import { SubmitButton } from "@/components/forms/submit-button";
 import type { AuthFormState } from "@/lib/auth/validation";
@@ -10,6 +10,7 @@ export function ProfileForm({ displayName }: { displayName: string }) {
     updateDisplayName,
     {} satisfies AuthFormState,
   );
+  const [name, setName] = useState(displayName);
   return (
     <form action={action} className="app-form">
       <div className="app-field">
@@ -17,7 +18,8 @@ export function ProfileForm({ displayName }: { displayName: string }) {
         <input
           id="displayName"
           name="displayName"
-          defaultValue={displayName}
+          value={name}
+          onChange={(event) => setName(event.currentTarget.value)}
           autoComplete="name"
           maxLength={40}
           required

@@ -30,7 +30,10 @@ export default function HomePage() {
               choose your team identity, and bring all six managers together.
             </p>
             <div className="hero-actions">
-              <Link href="/sign-up" className="button button-primary">
+              <Link
+                href="/sign-up?next=%2Fleagues%2Fnew"
+                className="button button-primary"
+              >
                 Create a private league <Icon name="arrowUpRight" size={16} />
               </Link>
               <Link href="/demo" className="button button-secondary">
@@ -169,7 +172,10 @@ export default function HomePage() {
                 roster limits are the intended format; drafting and scoring
                 experiences are still in development.
               </p>
-              <Link href="/sign-up" className="text-link">
+              <Link
+                href="/sign-up?next=%2Fleagues%2Fnew"
+                className="text-link"
+              >
                 Get your league started <Icon name="arrowUpRight" size={15} />
               </Link>
             </div>

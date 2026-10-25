@@ -21,13 +21,16 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [x] Preview-origin confirmation handling, existing-account profile backfill, and explicit Node 22.x/Vercel build configuration
 - [x] Provision dedicated Free Supabase project and apply/verify both migrations through the connected plugin
 - [x] Create Vercel Hobby project through authenticated CLI, select Next.js/Node 22 and connect GitHub with `main` production tracking
-- [ ] Configure hosted confirmation template/redirects, production SMTP and verified email delivery
+- [x] Configure Vercel public variables in development/preview/production and Supabase Site URL/scoped redirects; implement default-mailer PKCE and local/custom-template token-hash callbacks
+- [x] Original shared dark consumer design, responsive sidebar/bottom navigation and honest practice/upcoming gameplay surfaces
+- [x] Hosted owner account email-confirmed and successful sign-in recorded by the provider
+- [ ] Verify production SMTP and a full hosted multi-manager email/signup rehearsal
 
 **Acceptance:** 6 distinct users can join one private league; uninvited users cannot view it.
 
-**Verified locally:** seven email-confirmed Supabase Auth accounts; six joined, seventh rejected; nonmember private reads denied. Browser flows ran against real native Auth/PostgREST/Postgres services. The dedicated hosted backend and Vercel Git project are provisioned; successful hosted email/signup and full deployed acceptance remain unverified.
+**Verified locally:** seven normally registered, email-confirmed Supabase Auth fixture accounts; six joined, seventh rejected; nonmember private reads denied. A real API final-seat race admitted exactly one contender and preserved six memberships/teams. Browser flows ran against native Auth/PostgREST/PostgreSQL/Mailpit, including default-template PKCE confirmation, invitation-preserving sign-in, create/join/edit/leave/rejoin and permission errors. Thirteen private surfaces and four public surfaces passed 320/390/768/1440px checks; 34 mobile/desktop axe scans reported no violations, with manual review of clipped/symbol contrast cases. All 18 fictional practice picks and scoring interactions passed. The hosted owner account is confirmed with a recorded sign-in; authenticated hosted league/invitation rehearsal still requires the owner's usable app session, and ordinary-recipient email still requires verified SMTP.
 
-**Infrastructure gate:** dedicated Free Supabase project `irdolhsdemjugrsgfuuc` is provisioned in `us-west-1` with both migrations, seven-table RLS, constraints/grants and anonymous API denial verified. Seven intentional authenticated SECURITY DEFINER warnings remain documented. The Vercel plugin's project-create 403 was resolved through the CLI's own normal browser authentication: Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah` now uses Next.js/Node 22 and links `anshbalusa-ui/cricket-fantasy`, with `main` production and other branches preview. No plan/purchase/unrelated-project changes. Development `.env.local` is configured; Vercel application variables, hosted Auth/SMTP and fourteen deployed acceptance checks remain separate work. M2 is not started.
+**Infrastructure gate:** existing Free Supabase project `irdolhsdemjugrsgfuuc` in `us-west-1` has both migrations, seven-table RLS, constraints/grants and real anonymous API/RPC denial verified. All seven intentional authenticated SECURITY DEFINER warnings were reviewed against the deployed definitions and grants; no authorization defect requiring a new migration was found. The authenticated Vercel CLI configured existing Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah`, with Next.js/Node 22, GitHub `main` production, automatic branch previews and public variables in all three environments. Supabase confirmation URLs are applied; the default Free mailer rejected custom templates, so both normal confirmation protocols are supported without a plan change. GitHub Actions and the Git-triggered redesign preview are green/Ready. Production SMTP, ordinary-recipient delivery and the full hosted multi-manager rehearsal remain unverified. No purchase, plan change or unrelated-project mutation occurred. M2 is not started.
 
 ## M2 — Draft night — #2
 - [ ] Normalized MLC player pool with vetted roles/identifiers
@@ -65,7 +68,7 @@ Keep milestones independently demonstrable. An unchecked box is **not implemente
 - [x] Commit npm lockfile; CI uses npm ci
 - [x] Local desktop/mobile browser smoke with actual authentication and database
 - [x] PostgreSQL RLS/concurrency test job in CI configuration (local command verified)
-- [ ] Live hosted preview
+- [x] Live hosted Git-triggered preview with normal Vercel protection
 
 ## Expansion, only after MLC alpha
 - [ ] IPL adapter and league configuration

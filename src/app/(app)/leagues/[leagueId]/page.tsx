@@ -2,24 +2,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LeagueMembers } from "@/components/leagues/lobby";
 import { getLeagueDetail } from "@/lib/leagues/queries";
-import {
-  Avatar,
-  Badge,
-  EmptyState,
-  PageHeading,
-  Panel,
-  Stat,
-} from "@/components/ui/primitives";
+import { Badge, EmptyState, Panel } from "@/components/ui/primitives";
 import { Icon } from "@/components/ui/icon";
 import { MatchupPreview, RosterPreview } from "@/components/fantasy/experience";
+import { LeagueHeading } from "@/components/leagues/heading";
+import { LeagueNavigation } from "@/components/leagues/navigation";
 
 const sections = [
-  { key: "home", label: "Home" },
-  { key: "roster", label: "Roster" },
-  { key: "matchup", label: "Matchup" },
-  { key: "standings", label: "Standings" },
-  { key: "draft", label: "Draft" },
-  { key: "managers", label: "Managers" },
+  { key: "home", label: "Home", upcoming: false },
+  { key: "roster", label: "Roster", upcoming: true },
+  { key: "matchup", label: "Matchup", upcoming: true },
+  { key: "standings", label: "Standings", upcoming: true },
+  { key: "draft", label: "Draft", upcoming: true },
+  { key: "managers", label: "Managers", upcoming: false },
 ] as const;
 type Section = (typeof sections)[number]["key"];
 type LeaguePageProps = {
@@ -40,25 +35,22 @@ export default async function LeaguePage({
     ? (requested as Section)
     : "home";
   const ownMember = members.find(({ user_id }) => user_id === currentUserId);
-  const isCommissioner = league.commissioner_user_id === currentUserId;
+  const canInvite =
+    league.commissioner_user_id === currentUserId &&
+    league.status === "lobby" &&
+    members.length < league.capacity;
   const recentMembers = [...members]
     .sort((a, b) => b.joined_at.localeCompare(a.joined_at))
     .slice(0, 4);
   return (
     <div className="app-page">
-      <Link href="/leagues" className="app-back">
-        <Icon name="arrowLeft" size={17} /> My leagues
-      </Link>
-      <PageHeading
-        eyebrow={`${season.name} · ${season.year} · PRIVATE LEAGUE`}
-        title={league.name}
+      <LeagueHeading
+        leagueId={league.id}
+        leagueName={league.name}
+        seasonName={season.name}
         description={
           <span className="league-hero">
-            <Avatar name={league.name} seed={league.id} size="md" />
-            <span>
-              {ownMember?.team_name} · {members.length} of {league.capacity}{" "}
-              managers
-            </span>
+            <span>{ownMember?.team_name ?? "Your team"}</span>
             <Badge tone={league.status === "lobby" ? "mint" : "neutral"} dot>
               {league.status}
             </Badge>
@@ -67,51 +59,36 @@ export default async function LeaguePage({
         actions={
           <Link
             href={`/leagues/${league.id}/lobby`}
-            className="button button-secondary"
+            className="button button-secondary league-lobby-button"
+            aria-label="League lobby and settings"
           >
-            <Icon name="settings" size={16} /> League lobby
+            <Icon name="settings" size={18} />
+            <span className="league-lobby-label">League lobby</span>
           </Link>
         }
       />
-      <nav className="league-tabs" aria-label="League sections">
-        {sections.map(({ key, label }) => (
-          <Link
-            key={key}
-            href={`/leagues/${league.id}?tab=${key}`}
-            aria-current={activeTab === key ? "page" : undefined}
-          >
-            {label}
-            {["roster", "matchup", "standings", "draft"].includes(key) && (
-              <span className="tab-upcoming">Soon</span>
-            )}
-          </Link>
-        ))}
-      </nav>
+      <LeagueNavigation
+        leagueId={league.id}
+        activeTab={activeTab}
+        sections={sections}
+      />
       {activeTab === "home" && (
         <>
-          <div className="dashboard-stats">
-            <Stat
-              label="Managers"
-              value={`${members.length}/${league.capacity}`}
-              tone="blue"
-            />
-            <Stat
-              label="Season"
-              value={season.year}
-              hint={season.name}
-              tone="amber"
-            />
-            <Stat
-              label="League status"
-              value={league.status}
-              tone={league.status === "lobby" ? "mint" : "neutral"}
-            />
-          </div>
           <div className="dashboard-body">
-            <Panel eyebrow="LEAGUE SETUP" title="Getting ready">
+            <Panel
+              eyebrow="LEAGUE SETUP"
+              title={
+                members.length < league.capacity
+                  ? "Fill the room"
+                  : "The room is full"
+              }
+            >
               <p className="app-muted">
-                Your league membership is set. Drafting, rosters, scoring and
-                fixtures are upcoming; no results are being shown.
+                Your league is taking shape. Meet your managers or fine-tune
+                your team identity in the lobby.
+              </p>
+              <p className="app-help">
+                Player drafting and scoring are coming soon.
               </p>
               <div className="setup-progress">
                 <span>League capacity</span>
@@ -134,6 +111,21 @@ export default async function LeaguePage({
                 </span>
               </div>
               <div className="next-steps">
+                {canInvite && (
+                  <Link
+                    className="action-row"
+                    href={`/leagues/${league.id}/lobby#league-invitation`}
+                  >
+                    <span className="action-row-icon">
+                      <Icon name="link" size={18} />
+                    </span>
+                    <span className="action-row-copy">
+                      <strong>Invite your group</strong>
+                      <small>Generate or manage the private invite link.</small>
+                    </span>
+                    <Icon name="arrowRight" size={16} />
+                  </Link>
+                )}
                 <Link
                   className="action-row"
                   href={`/leagues/${league.id}?tab=managers`}
@@ -147,21 +139,6 @@ export default async function LeaguePage({
                   </span>
                   <Icon name="arrowRight" size={16} />
                 </Link>
-                {isCommissioner && (
-                  <Link
-                    className="action-row"
-                    href={`/leagues/${league.id}/lobby`}
-                  >
-                    <span className="action-row-icon">
-                      <Icon name="link" size={18} />
-                    </span>
-                    <span className="action-row-copy">
-                      <strong>Invite your group</strong>
-                      <small>Generate or manage the private invite link.</small>
-                    </span>
-                    <Icon name="arrowRight" size={16} />
-                  </Link>
-                )}
               </div>
             </Panel>
             <Panel eyebrow="RECENT MEMBERSHIP" title="League activity">
@@ -186,9 +163,6 @@ export default async function LeaguePage({
                   </div>
                 ))}
               </div>
-              <p className="app-help">
-                This timeline reflects persisted membership only.
-              </p>
             </Panel>
           </div>
         </>
@@ -198,8 +172,7 @@ export default async function LeaguePage({
           <LeagueMembers detail={detail} />
           <Panel eyebrow="MEMBERSHIP" title="League roster">
             <p className="app-muted">
-              Manager names, team identities and roles come from this league’s
-              persisted memberships.
+              Your league’s managers, team identities and roles.
             </p>
             <Link
               className="button button-secondary"

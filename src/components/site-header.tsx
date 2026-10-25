@@ -14,7 +14,10 @@ export function SiteHeader() {
           <Link href="/sign-in" className="header-signin">
             Sign in
           </Link>
-          <Link href="/sign-up" className="button button-primary button-small">
+          <Link
+            href="/sign-up?next=%2Fleagues%2Fnew"
+            className="button button-primary button-small"
+          >
             Create league
           </Link>
         </div>

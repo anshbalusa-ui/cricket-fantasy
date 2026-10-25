@@ -354,8 +354,7 @@
 }
 .demo-player-list,
 .demo-manager-list,
-.demo-pick-history,
-.demo-roster-players {
+.demo-pick-history {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -569,20 +568,6 @@
 }
 .demo-roster-summary b {
   color: var(--text);
-}
-.demo-roster-players {
-  padding-top: 8px;
-}
-.demo-roster-players > li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 7px 0;
-  font-size: 11px;
-}
-.demo-roster-players .badge {
-  font-size: 8px;
 }
 .demo-fiction-note {
   color: var(--subtle);

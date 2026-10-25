@@ -8,6 +8,7 @@ import {
   RenameLeagueForm,
   RenameTeamForm,
 } from "@/components/leagues/forms";
+import { LeagueHeading } from "@/components/leagues/heading";
 
 export function LeagueMembers({ detail }: { detail: LeagueDetail }) {
   const slots = Array.from(
@@ -43,19 +44,17 @@ export function LeagueMembers({ detail }: { detail: LeagueDetail }) {
               <Badge
                 tone={member.role === "commissioner" ? "amber" : "neutral"}
               >
-                {member.role === "commissioner"
-                  ? "Commissioner"
-                  : `Manager ${index}`}
+                {member.role === "commissioner" ? "Commissioner" : "Manager"}
               </Badge>
             </div>
           ) : (
             <div className="member-slot" key={`empty-${index}`}>
-              <span className="member-avatar" aria-hidden="true">
-                +
+              <span className="member-open-avatar" aria-hidden="true">
+                <Icon name="users" size={16} />
               </span>
               <span className="member-info">
                 <span className="member-name">Open manager spot</span>
-                <span className="member-team">Invite someone to join</span>
+                <span className="member-team">Awaiting a manager</span>
               </span>
               <span className="member-role">
                 {index + 1} / {detail.league.capacity}
@@ -78,25 +77,25 @@ export function LeagueLobby({ detail }: { detail: LeagueDetail }) {
       <Link href={`/leagues/${league.id}`} className="app-back">
         <Icon name="arrowLeft" size={17} /> League home
       </Link>
-      <header className="page-heading">
-        <div>
-          <p className="eyebrow">
-            {season.name} · {season.year} · PRIVATE LEAGUE
-          </p>
-          <h1>{league.name}</h1>
-          <p className="page-description">
-            League lobby · {members.length} of {league.capacity} managers
-          </p>
-        </div>
-        <div className="page-actions">
-          <Link
-            href={`/leagues/${league.id}`}
-            className="button button-secondary"
-          >
-            League home
-          </Link>
-        </div>
-      </header>
+      <LeagueHeading
+        leagueId={league.id}
+        leagueName={league.name}
+        seasonName={season.name}
+        description={`League lobby · ${members.length} of ${league.capacity} managers`}
+        actions={
+          isCommissioner && isLobby && members.length < league.capacity ? (
+            <Link
+              href="#league-invitation"
+              className="button button-primary button-small"
+            >
+              <Icon name="link" size={16} />
+              <span>
+                Invite<span className="invite-managers-label"> managers</span>
+              </span>
+            </Link>
+          ) : undefined
+        }
+      />
       {isLobby ? (
         <div className="lobby-layout">
           <LeagueMembers detail={detail} />
@@ -110,11 +109,13 @@ export function LeagueLobby({ detail }: { detail: LeagueDetail }) {
               </Panel>
             )}
             {isCommissioner && (
-              <InvitationControls
-                leagueId={league.id}
-                invitation={invitation}
-                capacityReached={members.length >= league.capacity}
-              />
+              <div id="league-invitation">
+                <InvitationControls
+                  leagueId={league.id}
+                  invitation={invitation}
+                  capacityReached={members.length >= league.capacity}
+                />
+              </div>
             )}
             <Panel
               eyebrow="YOUR TEAM"

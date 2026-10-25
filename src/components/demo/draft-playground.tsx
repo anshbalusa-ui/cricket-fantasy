@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Avatar, Badge, Panel } from "@/components/ui/primitives";
-import { RoleBadge } from "@/components/fantasy/experience";
+import { RoleBadge, RosterRows } from "@/components/fantasy/experience";
 import { PracticePlayerProfile } from "@/components/fantasy/practice-player-profile";
 import { managerAtSnakePick } from "@/lib/fantasy/draft";
 import { demoManagers, demoPlayers } from "@/lib/demo/fixtures";
@@ -428,20 +428,10 @@ export function DraftPlayground() {
                   ))}
                 </div>
               </div>
-              <ul className="demo-roster-players">
-                {roster.length ? (
-                  roster.map((player) => (
-                    <li key={player.id}>
-                      <span>{player.name}</span>
-                      <RoleBadge role={player.role} />
-                    </li>
-                  ))
-                ) : (
-                  <li className="demo-history-empty">
-                    No players picked for this team yet.
-                  </li>
-                )}
-              </ul>
+              <RosterRows
+                players={roster}
+                emptyMessage="No players picked for this team yet."
+              />
             </Panel>
             <p className="demo-fiction-note">
               Fictional managers, players and ratings. This room is local

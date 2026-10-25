@@ -26,7 +26,7 @@ export default async function JoinPage({ searchParams }: JoinPageProps) {
           League details stay private until you successfully join. Invitation
           links are issued by a league commissioner.
         </div>
-        <JoinLeagueForm token={token} />
+        <JoinLeagueForm key={token} token={token} />
       </Panel>
     </div>
   );

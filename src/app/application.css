@@ -207,7 +207,7 @@
   padding: 25px 26px;
   border: 1px solid var(--border);
   border-radius: 17px;
-  background: linear-gradient(110deg, #142332 0%, var(--surface) 68%);
+  background: var(--surface-raised);
 }
 .dashboard-intro h2 {
   margin: 5px 0;
@@ -315,6 +315,9 @@
   font-size: 13px;
   font-weight: 650;
   white-space: nowrap;
+}
+.league-tabs a:focus-visible {
+  outline-offset: -3px;
 }
 .league-tabs a[aria-current="page"] {
   border-color: var(--accent);
@@ -428,6 +431,7 @@
   gap: 10px;
 }
 .member-slot {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -443,6 +447,7 @@
 .member-name,
 .member-team {
   display: block;
+  overflow-wrap: anywhere;
 }
 .member-name {
   font-weight: 700;
@@ -527,6 +532,42 @@
 .page-heading .league-hero {
   margin-top: 5px;
 }
+.league-identity-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.league-identity-header > .avatar {
+  margin-top: 4px;
+}
+.league-identity-header > .page-heading {
+  flex: 1;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+.league-identity-header .page-heading > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.league-identity-header .page-actions {
+  width: auto;
+  flex-shrink: 0;
+}
+.league-identity-header h1,
+.league-hero > span:first-child {
+  overflow-wrap: anywhere;
+}
+.member-open-avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 1px dashed #43546c;
+  border-radius: 10px;
+  color: var(--subtle);
+}
 .app-page > .page-heading h1 {
   overflow-wrap: anywhere;
 }
@@ -564,6 +605,9 @@
     grid-template-columns: 1fr;
   }
   .account-grid {
+    grid-template-columns: 1fr;
+  }
+  .lobby-layout {
     grid-template-columns: 1fr;
   }
 }
@@ -619,9 +663,6 @@
   .app-grid-two {
     grid-template-columns: 1fr;
   }
-  .lobby-layout {
-    grid-template-columns: 1fr;
-  }
   .page-heading {
     align-items: flex-start;
   }
@@ -652,8 +693,32 @@
   }
   .league-tabs a {
     padding-inline: 10px;
+    min-height: 48px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
   }
   .tab-upcoming {
+    display: inline-flex;
+  }
+  .league-identity-header {
+    gap: 11px;
+  }
+  .league-identity-header > .avatar {
+    width: 42px;
+    height: 46px;
+    min-width: 42px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+  .league-identity-header .league-lobby-button {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+  .league-lobby-label,
+  .invite-managers-label {
     display: none;
   }
   .loading-cards {
