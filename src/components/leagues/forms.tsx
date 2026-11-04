@@ -102,8 +102,9 @@ export function CreateLeagueForm({
           ))}
         </select>
         <span className="app-help">
-          Season catalogue and membership setup only. Fixtures, live scores and
-          scoring are not available.
+          A historical season replay with real match data. Draft 15 players,
+          choose your starting XI and compete head-to-head. This is not a
+          live-score feed.
         </span>
       </div>
       <ActionMessage state={state} />

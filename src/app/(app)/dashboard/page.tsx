@@ -11,33 +11,61 @@ import {
 import { getMyProfile } from "@/lib/users/queries";
 import { getMyLeagues } from "@/lib/leagues/queries";
 import { getAvailableSeasons } from "@/lib/competitions/queries";
+import { BENCH_COUNT, SQUAD_SIZE, STARTER_COUNT } from "@/lib/fantasy/lineup";
 
 export default async function DashboardPage() {
-  const [{ user }, leagues, availableSeasons] = await Promise.all([
+  const [{ user }, leagues, seasons] = await Promise.all([
     getMyProfile("/dashboard"),
     getMyLeagues(),
     getAvailableSeasons(),
   ]);
-  const mlcSeason = availableSeasons
-    .filter((season) => season.competition.slug === "mlc")
-    .sort((a, b) => b.year - a.year)[0];
-  const commissionerLeagues = leagues.filter(
-    (league) => league.commissioner_user_id === user.id,
+  const season = seasons.find(
+    (entry) => entry.competition.slug === "mlc" && entry.dataAvailable,
   );
-  const managerCount = leagues.reduce(
-    (total, league) => total + league.member_count,
-    0,
+  const openLeagues = leagues.filter(
+    (league) =>
+      league.commissioner_user_id === user.id &&
+      league.status === "lobby" &&
+      league.member_count < league.capacity,
   );
-  const openCommissionerLeagues = commissionerLeagues.filter(
-    (league) => league.member_count < league.capacity,
-  );
-  const inviteLeague = openCommissionerLeagues[0];
+  const drafting = leagues.filter((league) => league.status === "drafting");
+  const focusLeague =
+    drafting[0] ??
+    leagues.find((league) => league.status === "active") ??
+    leagues.find((league) => league.status === "lobby") ??
+    leagues[0];
+  const focusTab =
+    focusLeague?.status === "drafting" ||
+    (focusLeague?.status === "lobby" &&
+      focusLeague.member_count === focusLeague.capacity)
+      ? "draft"
+      : focusLeague?.status === "active"
+        ? "roster"
+        : focusLeague?.status === "completed"
+          ? "standings"
+          : "home";
+  const focusTitle =
+    focusLeague?.status === "drafting"
+      ? "Your draft room is waiting."
+      : focusLeague?.status === "active"
+        ? "Set your XI. Back your picks."
+        : focusLeague?.status === "completed"
+          ? "The season has its story."
+          : "Your league starts with your people.";
+  const focusAction =
+    focusTab === "draft"
+      ? "Enter draft room"
+      : focusTab === "roster"
+        ? "Manage my team"
+        : focusTab === "standings"
+          ? "See the final standings"
+          : "Open league";
   return (
     <div className="app-page">
       <PageHeading
         eyebrow="YOUR CRICKET CIRCLE"
         title="Home"
-        description="Your private leagues and season setup."
+        description="Your teams, draft rooms and next round."
         actions={
           <Link className="button button-primary" href="/leagues/new">
             <Icon name="plus" size={17} /> Create league
@@ -47,31 +75,34 @@ export default async function DashboardPage() {
       <section className="dashboard-intro">
         <div>
           <p className="eyebrow">
-            {mlcSeason
-              ? `${mlcSeason.competition.name} · ${mlcSeason.name} (${mlcSeason.year}) · ${mlcSeason.status}`
-              : "MAJOR LEAGUE CRICKET · SEASON CATALOGUE"}
+            {season?.name ?? "MAJOR LEAGUE CRICKET"} · HISTORICAL REPLAY
           </p>
-          <h2>Your league starts with your people.</h2>
+          <h2>{focusTitle}</h2>
           <p>
-            The season catalogue provides metadata only. Fixtures, live scores
-            and scoring aren’t available.
+            {focusLeague
+              ? `${focusLeague.name} · ${focusLeague.my_team_name}. Your draft, roster and season results stay with your league.`
+              : `Draft ${SQUAD_SIZE} real players, choose your starting XI and play your friends head-to-head through a recorded MLC season.`}
           </p>
         </div>
-        <Link href="/leagues" className="button button-secondary">
-          Explore my leagues <Icon name="arrowRight" size={16} />
+        <Link
+          href={
+            focusLeague
+              ? `/leagues/${focusLeague.id}?tab=${focusTab}`
+              : "/leagues/new"
+          }
+          className="button button-primary"
+        >
+          {focusLeague ? focusAction : "Create your first league"}
+          <Icon name="arrowRight" size={16} />
         </Link>
       </section>
       <div className="dashboard-stats">
-        <Stat label="Private leagues" value={leagues.length} tone="mint" />
-        <Stat label="Manager seats" value={managerCount} tone="blue" />
+        <Stat label="Your leagues" value={leagues.length} tone="mint" />
+        <Stat label="Drafts underway" value={drafting.length} tone="blue" />
         <Stat
-          label="Leagues with open spots"
-          value={openCommissionerLeagues.length}
-          hint={
-            openCommissionerLeagues.length
-              ? "Commissioner invite available"
-              : "No open commissioner spots"
-          }
+          label="Your squad format"
+          value={`${STARTER_COUNT} + ${BENCH_COUNT}`}
+          hint={`${SQUAD_SIZE} exclusive draft picks`}
           tone="amber"
         />
       </div>
@@ -87,7 +118,7 @@ export default async function DashboardPage() {
         >
           {leagues.length ? (
             <div className="dashboard-leagues">
-              {leagues.slice(0, 4).map((league) => (
+              {leagues.slice(0, 6).map((league) => (
                 <Link
                   className="league-tile"
                   href={`/leagues/${league.id}`}
@@ -103,10 +134,22 @@ export default async function DashboardPage() {
                     </span>
                   </span>
                   <Badge
-                    tone={league.status === "lobby" ? "mint" : "neutral"}
+                    tone={
+                      league.status === "drafting"
+                        ? "mint"
+                        : league.status === "active"
+                          ? "blue"
+                          : league.status === "completed"
+                            ? "amber"
+                            : "neutral"
+                    }
                     dot
                   >
-                    {league.status}
+                    {league.status === "active"
+                      ? "Season open"
+                      : league.status === "completed"
+                        ? "Final"
+                        : league.status}
                   </Badge>
                 </Link>
               ))}
@@ -115,7 +158,7 @@ export default async function DashboardPage() {
             <EmptyState
               icon="users"
               title="Your first league is waiting."
-              description="Create a private space for your group or join with a commissioner’s invitation."
+              description="Make a private room for your group, or join with a commissioner’s invitation."
               action={
                 <span className="app-actions">
                   <Link className="button button-primary" href="/leagues/new">
@@ -130,32 +173,34 @@ export default async function DashboardPage() {
             />
           )}
         </Panel>
-        <Panel eyebrow="UP NEXT" title="A couple of good moves">
+        <Panel eyebrow="THE NEXT MOVE" title="Make it your season">
           <div className="dashboard-next">
-            {inviteLeague && (
+            {openLeagues[0] && (
               <Link
-                href={`/leagues/${inviteLeague.id}/lobby`}
+                href={`/leagues/${openLeagues[0].id}/lobby#league-invitation`}
                 className="action-row"
               >
                 <span className="action-row-icon">
                   <Icon name="link" size={18} />
                 </span>
                 <span className="action-row-copy">
-                  <strong>Fill your league</strong>
+                  <strong>Bring your managers</strong>
                   <small>
-                    {inviteLeague.name} · generate or share an invitation.
+                    {openLeagues[0].name} · create or share an invitation.
                   </small>
                 </span>
                 <Icon name="arrowRight" size={16} />
               </Link>
             )}
-            <Link href="/demo" className="action-row">
+            <Link href="/players" className="action-row">
               <span className="action-row-icon">
-                <Icon name="target" size={18} />
+                <Icon name="users" size={18} />
               </span>
               <span className="action-row-copy">
-                <strong>Try a practice draft</strong>
-                <small>Fictional players. Real snake-order mechanics.</small>
+                <strong>Know the player pool</strong>
+                <small>
+                  Real historical runs, wickets and fantasy-point breakdowns.
+                </small>
               </span>
               <Icon name="arrowRight" size={16} />
             </Link>
@@ -164,15 +209,15 @@ export default async function DashboardPage() {
                 <Icon name="shirt" size={18} />
               </span>
               <span className="action-row-copy">
-                <strong>Learn the lineup</strong>
-                <small>Explore the planned starter and bench format.</small>
+                <strong>Learn the format</strong>
+                <small>Fifteen picks, a starting XI and four reserves.</small>
               </span>
               <Icon name="arrowRight" size={16} />
             </Link>
           </div>
           <p className="app-help">
-            Drafting, scoring, schedules and live results aren’t available yet.
-            No scores or standings are shown until they’re real.
+            Historical cricket, real league decisions. Rounds are locked and
+            replayed explicitly; no live feed or projected scores are implied.
           </p>
         </Panel>
       </div>

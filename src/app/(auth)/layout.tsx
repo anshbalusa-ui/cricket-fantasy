@@ -11,8 +11,7 @@ export default function AuthLayout({
         <aside className="auth-aside">
           <Brand />
           <p className="auth-mobile-note">
-            Private cricket leagues for your friends. Drafting and scoring are
-            still in development.
+            Private cricket leagues. Fifteen picks. Your starting XI.
           </p>
           <div className="auth-aside-copy">
             <span className="auth-aside-kicker">
@@ -24,13 +23,13 @@ export default function AuthLayout({
               is better shared.
             </h2>
             <p>
-              Create a league for your friends, gather your crew, and get ready
-              for fantasy cricket together.
+              Draft real players with your friends, set your XI, and settle a
+              season head-to-head.
             </p>
             <div className="auth-aside-rule" />
             <p className="auth-aside-small">
-              League setup is available. Player drafting and fantasy scoring are
-              still in development.
+              MLC 2026 historical replay. Free private leagues. No live feed,
+              entry fees or prizes.
             </p>
           </div>
           <span className="auth-aside-footer">

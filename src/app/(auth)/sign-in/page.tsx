@@ -19,7 +19,7 @@ export default async function SignInPage({
     query.error === "setup"
       ? "Authentication is not configured. Please try again after setup."
       : query.error === "confirmation"
-        ? "Open the confirmation link in the same browser used to sign up. If it has expired, request a new one by signing up again."
+        ? "Open the confirmation or recovery link in the same browser where you requested it. If it expired, request a fresh email."
         : query.error === "signout"
           ? "Unable to sign out right now. Please try again."
           : null;
@@ -42,6 +42,11 @@ export default async function SignInPage({
         </p>
       )}
       <AuthForm mode="sign-in" next={next} />
+      <p className="auth-links">
+        <Link href={`/forgot-password?next=${encodeURIComponent(next)}`}>
+          Forgot your password?
+        </Link>
+      </p>
       <div className="auth-links">
         <span>New here?</span>
         <Link href={`/sign-up?next=${encodeURIComponent(next)}`}>

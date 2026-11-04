@@ -18,7 +18,7 @@ export function LeagueNavigation({
 }: {
   leagueId: string;
   activeTab: string;
-  sections: readonly { key: string; label: string; upcoming: boolean }[];
+  sections: readonly { key: string; label: string }[];
 }) {
   const navigation = useRef<HTMLElement>(null);
 
@@ -37,15 +37,14 @@ export function LeagueNavigation({
         if (event.target instanceof HTMLAnchorElement) revealTab(event.target);
       }}
     >
-      {sections.map(({ key, label, upcoming }) => (
+      {sections.map(({ key, label }) => (
         <Link
           key={key}
           href={`/leagues/${leagueId}?tab=${key}`}
           aria-current={activeTab === key ? "page" : undefined}
-          aria-label={upcoming ? `${label} (coming soon)` : label}
+          aria-label={label}
         >
           {label}
-          {upcoming && <span className="tab-upcoming">Soon</span>}
         </Link>
       ))}
     </nav>

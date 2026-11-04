@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { signOut } from "@/lib/auth/actions";
 import { getMyProfile } from "@/lib/users/queries";
 import { ProfileForm } from "@/components/forms/profile-form";
@@ -57,6 +58,9 @@ export default async function AccountPage({
           <p className="app-help">
             Your account is managed through your secure sign-in session.
           </p>
+          <Link className="button button-secondary" href="/account/password">
+            <Icon name="lock" size={17} /> Change password
+          </Link>
           <form action={signOut}>
             <button className="button button-secondary" type="submit">
               <Icon name="logout" size={17} /> Sign out

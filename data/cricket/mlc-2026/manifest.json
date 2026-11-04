@@ -1,0 +1,363 @@
+{
+  "provider": "Cricsheet",
+  "sourceUrl": "https://cricsheet.org/downloads/mlc_json.zip",
+  "formatUrl": "https://cricsheet.org/format/json/",
+  "formatVersion": "Cricsheet JSON 1.3.0",
+  "licenseUrl": "https://opendatacommons.org/licenses/by/1.0/",
+  "attribution": "Cricsheet, Major League Cricket JSON data; https://cricsheet.org/",
+  "archiveSha256": "0e54cad247f1f26e7ee803f6e69ce6100166e66022f3ac5818e227855502db0b",
+  "archiveMatchCount": 109,
+  "season": 2026,
+  "matchCount": 34,
+  "distinctDates": 22,
+  "playerCount": 102,
+  "roleCounts": {
+    "WK": 7,
+    "BAT": 37,
+    "BOWL": 20,
+    "ALL": 38
+  },
+  "officialKeeperSources": {
+    "4663bd23": {
+      "name": "TL Seifert",
+      "url": "https://www.seattleorcas.com/players"
+    },
+    "571e1d2a": {
+      "name": "Shayan Jahangir",
+      "url": "https://www.seattleorcas.com/players"
+    },
+    "d1305df0": {
+      "name": "AGS Gous",
+      "url": "https://www.washingtonfreedom.com/squad"
+    },
+    "dcabd6bc": {
+      "name": "BKEL Milantha",
+      "url": "https://www.washingtonfreedom.com/squad"
+    },
+    "1bae756b": {
+      "name": "ADS Fletcher",
+      "url": "https://www.lakriders.us/"
+    },
+    "0c94f480": {
+      "name": "UBT Chand",
+      "url": "https://www.lakriders.us/"
+    },
+    "cf689f00": {
+      "name": "S Ganesh",
+      "url": "https://www.sfunicorns.com/squad/"
+    }
+  },
+  "rolePolicy": "mlc-2026-v2: fantasy-derived, not a complete official-role dataset. WK classifications use official 2026 franchise player pages explicitly listing the person as a wicketkeeper; all other roles derive from 2026 match contributions: ALL when both (runs >= 20 or balls faced >= 15) and (credited wickets > 0 or maiden > 0), BOWL when bowling evidence exists, otherwise BAT. Source URL is retained in each official WK player's role_source.",
+  "sourceFiles": [
+    {
+      "fileName": "1528557.json",
+      "sourceId": "1528557",
+      "date": "2026-06-18",
+      "checksum": "92bb4394aa89ffbf4778cff4d424f6e85eccbffd00a7bbbf56713cbc730e5ba4"
+    },
+    {
+      "fileName": "1528558.json",
+      "sourceId": "1528558",
+      "date": "2026-06-19",
+      "checksum": "69b68f870a7b0d012625d10373fb32562d7d13774b50facb3554f23c22218246"
+    },
+    {
+      "fileName": "1528559.json",
+      "sourceId": "1528559",
+      "date": "2026-06-19",
+      "checksum": "dc812cfeff782b2f4e7a4fd2066b9b3ada405f12a9b0f12b97a01cb86bdfd10a"
+    },
+    {
+      "fileName": "1528560.json",
+      "sourceId": "1528560",
+      "date": "2026-06-20",
+      "checksum": "86e9b5f776a9f844f278efd6102eba6172d6c665ec4ac5ce6eba2bc91b3d24af"
+    },
+    {
+      "fileName": "1528561.json",
+      "sourceId": "1528561",
+      "date": "2026-06-20",
+      "checksum": "8f78c5814b116994c4dcd35fa3fff09c0736c10958b100812ea13bd272019d44"
+    },
+    {
+      "fileName": "1528562.json",
+      "sourceId": "1528562",
+      "date": "2026-06-21",
+      "checksum": "0e75eeac639f664b20c491459f57ff00d913c697bd2a796d2404dfb14097ab1b"
+    },
+    {
+      "fileName": "1528563.json",
+      "sourceId": "1528563",
+      "date": "2026-06-21",
+      "checksum": "714c53a8f74d2565be02cca9df0673492f6781d6ff1646be276f32873847a0cf"
+    },
+    {
+      "fileName": "1528564.json",
+      "sourceId": "1528564",
+      "date": "2026-06-24",
+      "checksum": "a09b21b5202e566ba6c3fbd2de745080efb0c1754c7e742719e8f0672511ef53"
+    },
+    {
+      "fileName": "1528565.json",
+      "sourceId": "1528565",
+      "date": "2026-06-25",
+      "checksum": "68fbd37a9d2a6fae624d4acf98dc071fb91f7c46ae7738fd82d185a952c9d160"
+    },
+    {
+      "fileName": "1528566.json",
+      "sourceId": "1528566",
+      "date": "2026-06-26",
+      "checksum": "9f16241418cccd8f4532d38edd9a82c06c01fb97ef9f18c5f15921719f88026c"
+    },
+    {
+      "fileName": "1528567.json",
+      "sourceId": "1528567",
+      "date": "2026-06-26",
+      "checksum": "6963fb67732ce08947d4478c0c98cebeb6ba053ad5a050ff948903fc9d47db11"
+    },
+    {
+      "fileName": "1528568.json",
+      "sourceId": "1528568",
+      "date": "2026-06-27",
+      "checksum": "1108591061033688d6fcd3d1f040e8fcf232c66b31d77c6458745a889295334d"
+    },
+    {
+      "fileName": "1528569.json",
+      "sourceId": "1528569",
+      "date": "2026-06-27",
+      "checksum": "549cb25221448d0f518035eda73f20fa3724ef6f1d2fc154c812de2624dbae68"
+    },
+    {
+      "fileName": "1528570.json",
+      "sourceId": "1528570",
+      "date": "2026-06-28",
+      "checksum": "1adc3a32bc2c6d661ea63934ea9ffc67af503257422dc70e33e8f787f00ff3a4"
+    },
+    {
+      "fileName": "1528571.json",
+      "sourceId": "1528571",
+      "date": "2026-06-28",
+      "checksum": "164576384b0ad3b131e139594a8c56b65bf3e9291d38be04140d9f364c5ad529"
+    },
+    {
+      "fileName": "1528572.json",
+      "sourceId": "1528572",
+      "date": "2026-07-01",
+      "checksum": "55d212e5c6b22cad4752d4293349514c5715ed4c1362f8825705db6a9f05f936"
+    },
+    {
+      "fileName": "1528573.json",
+      "sourceId": "1528573",
+      "date": "2026-07-02",
+      "checksum": "917ceec2ab4397dee28c2b5cd4a0059cbcf24d41222d93bacd4f884441184844"
+    },
+    {
+      "fileName": "1528574.json",
+      "sourceId": "1528574",
+      "date": "2026-07-03",
+      "checksum": "a43488c92591c3d7f8a538a1c4b8ddc3620ed2fb3984652eee2cd4dc3ecf9f61"
+    },
+    {
+      "fileName": "1528575.json",
+      "sourceId": "1528575",
+      "date": "2026-07-04",
+      "checksum": "78ac75d7171b022eb5be34121bbc468cb4833d6088a768d97b3e085abb793a9c"
+    },
+    {
+      "fileName": "1528576.json",
+      "sourceId": "1528576",
+      "date": "2026-07-04",
+      "checksum": "af16c13bd02b5be345298f3e8694ac390227a1caf3bc3e6e2caa0b2a9a5a4449"
+    },
+    {
+      "fileName": "1528577.json",
+      "sourceId": "1528577",
+      "date": "2026-07-05",
+      "checksum": "4abab2fc23dc20ae913d64e73bcebbadd0efd1d667f8b90f029f28ca1166936e"
+    },
+    {
+      "fileName": "1528578.json",
+      "sourceId": "1528578",
+      "date": "2026-07-05",
+      "checksum": "10874d9b7dc51d7089cb1f7aa5f3a05d6a9fc116ae97a9bdd6af80bf9b8044e8"
+    },
+    {
+      "fileName": "1528579.json",
+      "sourceId": "1528579",
+      "date": "2026-07-08",
+      "checksum": "97918a6a179ea763e0ca0fb101769720f0a5767f7b3e4c780b2b7765bc72d064"
+    },
+    {
+      "fileName": "1528580.json",
+      "sourceId": "1528580",
+      "date": "2026-07-09",
+      "checksum": "35b34aa30550a3673f9bc52bc9046f9ec9b43bd677c142d11dc5e64d10339e19"
+    },
+    {
+      "fileName": "1528581.json",
+      "sourceId": "1528581",
+      "date": "2026-07-10",
+      "checksum": "63ab14ad8ee0a3c52a05fac1e80d73695f03f2b6712d355b7f8b098be157e547"
+    },
+    {
+      "fileName": "1528582.json",
+      "sourceId": "1528582",
+      "date": "2026-07-10",
+      "checksum": "96658033dcb8a3785b43a1bacdfab08db32d00c818f665f24758d4dedda5005f"
+    },
+    {
+      "fileName": "1528583.json",
+      "sourceId": "1528583",
+      "date": "2026-07-11",
+      "checksum": "53436cd4120263890e7a445ee253e09bebbd0f069d3849f401c57d42c36bb2ca"
+    },
+    {
+      "fileName": "1528584.json",
+      "sourceId": "1528584",
+      "date": "2026-07-11",
+      "checksum": "cebf920af78c3e740ad7c051561bc97586c2e5c4ac3bbcc3aaa7b8b6c24d4574"
+    },
+    {
+      "fileName": "1528585.json",
+      "sourceId": "1528585",
+      "date": "2026-07-12",
+      "checksum": "cdb0bbf0699fd3b36557a67c7ced3b78f80d37f88f8023ebe78e736fe209c095"
+    },
+    {
+      "fileName": "1528586.json",
+      "sourceId": "1528586",
+      "date": "2026-07-12",
+      "checksum": "e6057c75d73418e34977c1a0e97835cd00d7b55bb3b4b5cfcb51e2f88f57a795"
+    },
+    {
+      "fileName": "1528587.json",
+      "sourceId": "1528587",
+      "date": "2026-07-15",
+      "checksum": "375c3a112c143b97fa2cd6778f16fd12692cf3440f5200a3772f914c711078ad"
+    },
+    {
+      "fileName": "1528588.json",
+      "sourceId": "1528588",
+      "date": "2026-07-15",
+      "checksum": "44a13bc6185f4949cf2d4a26bfb8f92f1f9985498f3dffb67a69af99d778e281"
+    },
+    {
+      "fileName": "1528589.json",
+      "sourceId": "1528589",
+      "date": "2026-07-16",
+      "checksum": "9122148e59046baf896c369942b70453efafc906b473bb928eecf71e78381248"
+    },
+    {
+      "fileName": "1528590.json",
+      "sourceId": "1528590",
+      "date": "2026-07-18",
+      "checksum": "f727626f944d19bc2fd31155b0925e4b17ca94b88e68cd4fd1114fa7c2ed47b4"
+    }
+  ],
+  "rounds": [
+    {
+      "number": 1,
+      "name": "Regular season 1",
+      "stage": "regular",
+      "startsOn": "2026-06-18",
+      "endsOn": "2026-06-20",
+      "matchCount": 5,
+      "sourceIds": [
+        "1528557",
+        "1528558",
+        "1528559",
+        "1528560",
+        "1528561"
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Regular season 2",
+      "stage": "regular",
+      "startsOn": "2026-06-21",
+      "endsOn": "2026-06-25",
+      "matchCount": 4,
+      "sourceIds": [
+        "1528562",
+        "1528563",
+        "1528564",
+        "1528565"
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Regular season 3",
+      "stage": "regular",
+      "startsOn": "2026-06-26",
+      "endsOn": "2026-06-27",
+      "matchCount": 4,
+      "sourceIds": [
+        "1528566",
+        "1528567",
+        "1528568",
+        "1528569"
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Regular season 4",
+      "stage": "regular",
+      "startsOn": "2026-06-28",
+      "endsOn": "2026-07-03",
+      "matchCount": 5,
+      "sourceIds": [
+        "1528570",
+        "1528571",
+        "1528572",
+        "1528573",
+        "1528574"
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Regular season 5",
+      "stage": "regular",
+      "startsOn": "2026-07-04",
+      "endsOn": "2026-07-08",
+      "matchCount": 5,
+      "sourceIds": [
+        "1528575",
+        "1528576",
+        "1528577",
+        "1528578",
+        "1528579"
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Semifinal",
+      "stage": "semifinal",
+      "startsOn": "2026-07-09",
+      "endsOn": "2026-07-11",
+      "matchCount": 5,
+      "sourceIds": [
+        "1528580",
+        "1528581",
+        "1528582",
+        "1528583",
+        "1528584"
+      ]
+    },
+    {
+      "number": 7,
+      "name": "Final",
+      "stage": "final",
+      "startsOn": "2026-07-12",
+      "endsOn": "2026-07-18",
+      "matchCount": 6,
+      "sourceIds": [
+        "1528585",
+        "1528586",
+        "1528587",
+        "1528588",
+        "1528589",
+        "1528590"
+      ]
+    }
+  ]
+}
