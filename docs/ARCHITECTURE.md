@@ -1,101 +1,94 @@
-# Technical architecture — M1 implemented, later modules planned
+# Technical architecture — playable historical season
 
-## Focus
+One mobile-first Next.js application, not a microservice fleet. Real competitions, players, matches and source statistics remain separate from each private fantasy league's membership, draft, XI and results.
 
-Ship **one mobile-first web application**, not a microservice fleet. Separate cricket reality (competitions, fixtures, players, stats) from fantasy reality (leagues, draft, rosters, lineups, matchups).
+## Stack and modules
 
-## Intended stack
+- Next.js App Router, React and TypeScript; Node **22.x** in development, CI and Vercel.
+- Supabase Auth, user-scoped SSR clients and PostgreSQL. No service-role key in application clients, actions or public variables.
+- Original custom CSS design system, locally bundled Manrope and Lucide. Desktop sidebar; mobile global/contextual bottom navigation.
+- Existing Free Supabase project `irdolhsdemjugrsgfuuc`, `us-west-1`; existing Hobby Vercel project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah` in `anshbalusa-8318s-projects`. No duplicate projects or plan changes.
+- `src/lib/auth`, `users`, `leagues`, `supabase`: identity, profiles, invitations, membership and typed user clients.
+- `src/lib/fantasy`: pure scoring, snake order, XI validation/feasibility and historical schedule logic.
+- `src/lib/ingestion/cricsheet.ts`, `scripts/import-cricket.ts`: provider parsing and transactional operator import, separate from user league state.
+- `src/lib/catalog`: authenticated real-source read models, player history and published fixture calendar.
+- `src/lib/gameplay`: explicit snapshot/history DTOs, authenticated queries and server actions; no-store league/player GET routes in `src/app/api/`.
+- `src/components/gameplay`, `catalog`, `fantasy`, `ui`: real league screens, shared score audit UI and visual foundations. `/demo` alone remains fictional browser-only practice.
 
-- Frontend: Next.js App Router + React + TypeScript, custom responsive CSS, locally bundled variable Manrope and Lucide icons. Shared UI/navigation/fantasy presentation components support the public and protected surfaces.
-- Auth/database: Supabase Auth + Postgres with RLS. Existing Free project `irdolhsdemjugrsgfuuc` in `us-west-1` has both migrations, verified constraints/grants/RLS, active public client configuration and configured confirmation URLs. Default email delivery remains a separate acceptance/SMTP limitation.
-- Deployment: existing Vercel Hobby project `prj_VYvlYPp8UDKDlJ2pIVGfVlpp9wah`, configured through its authenticated local CLI. Next.js/Node 22.x, repository root, `main` production and automatic GitHub previews are verified; development/preview/production public variables and trusted system-preview origins are configured.
-- Tests: deterministic domain/validation tests and PostgreSQL constraint/RLS/concurrency scenarios; real local auth/browser smoke. End-to-end draft-room tests belong to M2.
-- Data: historical Cricsheet match records for replay; separately contracted/reviewed live provider when feasible.
+## Authentication and origins
 
-## Logical modules
+`src/proxy.ts` validates/refreshes sessions, forwards refresh cookies/cache headers and retains the protected path/query. Queries/actions independently require a genuine Auth user; database authorization is authoritative.
 
-- **Catalog:** competition, season, franchise, player identity and fixtures.
-- **Fantasy engine:** rules version, stat-to-points calculation, fantasy rounds and playoff results.
-- **League:** commissioners, invitations, memberships, teams and roles.
-- **Draft:** turn order, serialized picks, timer policy and reconnect snapshots.
-- **Lineups:** position checks, lock timestamps and ownership validation.
-- **Data ingestion:** canonical match IDs, normalized player identity, provider adapters and idempotent updates.
-- **Read models:** roster, matchup, standings and draft-board queries.
+Signup and recovery email origins come from `NEXT_PUBLIC_SITE_URL`, or Vercel's own generated `VERCEL_URL` in a preview environment. Request/forwarded-host headers cannot select an email origin. Production requires HTTPS.
 
-### M1 implementation boundaries
+The callback supports standard PKCE code exchange and the separate versioned token-hash confirmation template. Ambiguous credential combinations are rejected; only validated relative `next` paths survive. PKCE links must open in the same browser/exact origin that requested them. Password recovery uses ordinary delivered recovery mail and authenticated password update, not admin confirmation or impersonation.
 
-- `src/lib/auth` owns auth validation/actions and session checks; `src/lib/supabase` owns configuration and the typed server-only user client.
-- `src/proxy.ts` refreshes/validates claims and forwards refresh cookies/cache-control headers. Protected redirects preserve the original path/query. Server queries/actions independently validate the user with `getUser()` and database RLS remains authoritative.
-- Signup uses the trusted configured HTTPS origin in production. Vercel previews use only the provider-supplied `VERCEL_ENV=preview`/`VERCEL_URL` origin, never request headers; Supabase must separately allow that project's preview callback origins.
-- Confirmation supports two active provider protocols: standard PKCE code exchange for the hosted default mailer, and token-hash verification for the versioned local/custom-SMTP template. Credentials are mutually exclusive; both retain only a validated relative `next` destination. PKCE requires the same browser and exact signup origin.
-- `src/lib/users`, `src/lib/competitions`, and `src/lib/leagues` hold persistent profile/catalogue/league reads and league RPC actions. The existing `src/lib/fantasy` remains the pure draft/scoring engine.
-- All seven public tables have RLS. Catalogue reads require authentication. Profiles expose only the user's own/co-league display names. Invitations are commissioner-readable; raw secrets exist only in the creation response.
-- League mutations use narrowly granted, fixed-search-path security-definer RPCs with explicit identity/permission checks. The server never uses a service-role key.
-- Create atomically inserts the league, commissioner membership and team. Join/leave/invite mutations lock the league row. A join rechecks invitation state and expiry after locking and cannot exceed capacity.
-- Tokens contain 256 random bits, are stored only as SHA-256 hashes, expire after seven days and rotate by revoking older links. UUIDs identify competitions, seasons, users, leagues, memberships and teams separately.
-- Existing Auth accounts receive missing profiles via a forward-only backfill migration. New signups still initialize through the trigger; existing display names are preserved.
-- Hosted security advisors retain seven warnings for intentionally authenticated-callable SECURITY DEFINER RPCs. Actual grants revoke anonymous execution and direct league writes, fix every function's search path, and keep the trigger helper non-callable. Do not silence these warnings by disabling the required RPCs or claim zero hosted findings.
-- Draft, ingestion, lineup and matchup modules below remain planned, not simulated.
+The existing hosted Site URL and narrowly scoped production/preview/local callbacks are documented in README. Default hosted-mailer restrictions and production SMTP delivery are separate from database/CLI authorization.
 
-### Hosted RPC security review
+## Draft and reconnect
 
-The actual deployed definitions, owners, `search_path` settings and execution grants were reviewed, not inferred solely from migration text. All seven public RPCs explicitly reject missing `auth.uid()`, are owned by Postgres with `search_path = ''`, grant execution to `authenticated`, and deny `anon` and `PUBLIC` execution.
+1. Commissioner start locks a complete six-member lobby, validates the real season pool and assigns seats by join timestamp/user ID.
+2. PostgreSQL owns pick number, turn, deadline, revision and immutable picks. A unique `(league_id, player_id)` prevents duplicate ownership; `(league_id, pick_number)` prevents duplicate turns.
+3. Manual picks require caller membership, current ownership of the turn, an unexpired deadline and the expected pick number. Global role feasibility reserves every manager's typed minima and remaining squad slots.
+4. An expired-turn tick is member-callable but chooses its candidate on the server; the caller cannot pick for another manager. Competing ticks/picks serialize and stale requests cannot advance twice.
+5. Visible drafting rooms poll every five seconds; other views every twenty. Hidden polling pauses. Refreshes abort/sequence older requests; loss of authorization/connection blocks local mutations until reconnection. A lost mutation response reports uncertain outcome rather than falsely claiming no write occurred.
+6. The displayed countdown advances locally from the received server timestamp. Only a fresh server action authorizes a pick/timeout. There is no background offline timer service: reconnect resolves an expired turn.
 
-| RPC | Explicit identity and league authorization |
-| --- | --- |
-| `create_league` | Binds the new commissioner membership and team to the authenticated caller; validates names and an existing season; creation is atomic. |
-| `join_league` | Authenticated caller must present an active, unexpired hashed invitation; locks the league and rechecks the invitation, lobby state, duplicate membership and capacity before atomically joining. |
-| `create_invitation` | Locks the league, requires that caller's commissioner membership and lobby state; rotates older links and returns a fresh secret only to the caller. |
-| `revoke_invitation` | Resolves and locks the invitation's league; requires that caller's commissioner membership before revocation. |
-| `rename_team` | Requires caller membership and updates only the team whose manager is `auth.uid()`; no arbitrary manager identity is accepted. |
-| `rename_league` | Locks the target league and requires that caller's commissioner membership and lobby state. |
-| `leave_league` | Locks the target league, requires caller membership and lobby state, forbids commissioner departure and deletes only that caller's membership. |
+The real source window calendar is readable before drafting. Pick 90 atomically completes six 15-player squads, creates the five regular pairings plus playoff windows and initializes valid XIs.
 
-The signup trigger helper is not callable by client roles. Private membership-policy helpers are caller-scoped and not exposed as public Data API RPCs. Database tests separately exercise grants, RLS, ownership, invitation transitions and concurrent final-seat admission. Real hosted anonymous reads and league creation returned HTTP 401 / `42501`.
+## Historical scoring and state transitions
 
-No genuine authorization defect requiring a new migration was found in this review. The seven advisor warnings remain visible because authenticated clients intentionally execute these narrowly authorized transactions. Replacing them with browser-side writes or revoking required authenticated execution would break authorized operations rather than improve the boundary.
+```mermaid
+flowchart LR
+  A[Committed Cricsheet JSON and checksums] --> B[Normalized actual appearances]
+  B --> C[Versioned per-match points and breakdowns]
+  C --> D[Locked league XIs]
+  D --> E[Mean per starter's eligible appearances]
+  E --> F[Head-to-head results]
+  F --> G[Regular standings and frozen top-four seeds]
+  G --> H[Semifinals, final, champion]
+```
 
+Seven date-only windows group the 34 real source matches without splitting same-day fixtures. Historical **Lock & replay** is explicit; it does not pretend that old fixtures have future kickoff times. A save and lock serialize on the same league row. Only the owner sees an open XI; locking exposes participating XIs to members.
 
+Authoritative contribution, matchup and standings values use PostgreSQL `numeric` without a three-decimal storage limit. Display alone rounds to one decimal. Actual appearances, including zero-contribution XIs and credited substitute fielders, determine averages; benches and nonappearances contribute zero.
 
-## Import and scoring pipeline
+Five regular rounds form a full six-team round robin. Top-four seeds freeze after Round 5, then 1–4 and 2–3 semifinals, followed by a final. Exact playoff ties favor the higher seed. Recalculation uses frozen XIs and versioned source points; it updates results/champion within already frozen bracket identities, not retroactively redrawing participants. See [GAME_RULES.md](GAME_RULES.md).
 
-1. Acquire historical match JSON from the permitted source with attribution.
-2. Import source identifiers and team/player metadata into a normalized staging representation.
-3. Map external player IDs into canonical internal player IDs; manually resolve uncertain collisions.
-4. Derive a finalized **per-player, per-match stat line**. Verify wicket mode, catches, boundaries and maidens.
-5. Calculate points using an explicitly versioned scoring policy.
-6. Generate each fantasy team’s round score from locked starters and real match appearances.
-7. Recalculate matchup results and standings deterministically.
-8. Keep the raw source reference, ingest version/checksum, corrections log and calculation breakdown for audit.
+## RPC security matrix
 
-The UI must never use a player-name string as an identity key. Source feeds can change names, aliases, capitalization and franchises over time.
+The deployed definitions and grants were inspected directly after migration. Every one of these fifteen public SECURITY DEFINER functions checks `auth.uid()`, fixes `search_path = ''`, allows `authenticated` execution and denies `anon`/PUBLIC execution. The UI is not the permission boundary.
 
-## Important transactional boundaries
+| RPC                  | Required identity/authority                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `create_league`      | Creates commissioner/team for caller; validates imported, complete MLC season and names atomically.                |
+| `join_league`        | Caller presents an active expiring hash-only invite; lobby/capacity/duplicate checks repeat under the league lock. |
+| `create_invitation`  | Commissioner, lobby state; rotates previous secret.                                                                |
+| `revoke_invitation`  | Commissioner of the resolved invitation's league.                                                                  |
+| `rename_team`        | Member; derives only caller's own team.                                                                            |
+| `rename_league`      | Commissioner and lobby state.                                                                                      |
+| `leave_league`       | Member in lobby, not commissioner; removes only caller's membership/team.                                          |
+| `start_draft`        | Commissioner; exactly six managers/teams and a complete supported season.                                          |
+| `make_draft_pick`    | Member/current manager, expected pick, deadline, season eligibility and globally feasible exclusive ownership.     |
+| `draft_tick`         | Member; server-selected feasible auto-pick only for an expired turn.                                               |
+| `save_lineup`        | Member's own participating team, open round, eleven distinct eligible owned players, no lock.                      |
+| `replay_round`       | Commissioner of the target league; current open round or idempotent locked-round scoring.                          |
+| `recalculate_league` | Commissioner; at least one completed round, frozen lineups and existing bracket.                                   |
+| `get_league_game`    | Member only; preserves open-XI privacy and excludes invitation secrets/user emails.                                |
+| `get_player_history` | Member and source player belonging to that league's season.                                                        |
 
-- Drafting must make pick number, on-clock team, time limit, valid role pool and undrafted ownership atomic inside a database transaction. Do not implement a client-only lock.
-- An active-player ownership uniqueness constraint per fantasy league prevents duplicate drafting across two simultaneous requests.
-- Joining enforces roster cap in the database transaction, not only UI.
-- Locking lineups enforces published round lock time on the server, even if client clocks differ.
-- Score imports/replays must be re-runnable with no duplicate points.
+All 24 public tables have RLS. Fantasy reads require membership; catalog reads require authentication. The summary view uses `security_invoker=true`. Direct catalog/gameplay writes are revoked; only profile display-name updates are narrowly writable. Private mutation helpers and the signup trigger cannot be executed by client roles. Policy membership helpers are caller-scoped, outside the exposed schema.
 
-## Security
+The original seven SECURITY DEFINER warnings remain intentional; the eight gameplay/read RPCs bring that class to **15**. Revoking authenticated access would break required authorized operations, not fix a demonstrated vulnerability. One additional leaked-password-protection warning remains on Free; the provider documents that feature as Pro-only. Neither warnings nor RLS were suppressed, and no upgrade was purchased.
 
-- Enable RLS on each exposed Supabase table; use membership checks, not just authenticated-role checks.
-- Service-role credentials are server-only and must never appear in NEXT_PUBLIC variables, browser code or repo commits.
-- League membership gates private reads; commissioner membership gates league mutations.
-- Draft picks, roster changes and scoring mutations happen through verified server pathways with consistent authorization.
-- Secrets come from hosting environment variables only.
-- Supabase handles auth rate limits; production SMTP/rate-limit settings and further invitation/draft abuse controls require deployment/alpha review. Invitation secrets resist enumeration.
-- No money, wagers or prizes.
+## Source operations and deployment
 
-## MVP deployment phases
+Imports preserve source IDs, raw checksums, eligibility provenance, point versions and category breakdowns. Identical imports/recalculations do not duplicate results. Provider normalization has edge fixtures and an independent two-scorecard/12-player audit. Published migrations are immutable; structural catalog corrections require forward migrations.
 
-1. Static but clear prototype with fictional/demo data and a tested pure scoring library.
-2. Auth, DB migrations, RLS and real private league persistence.
-3. Transactional draft + roster/lineup validation.
-4. Historical import/replay + fantasy round scoring, matchups and standings.
-5. Alpha testing and mobile QA; only then investigate a production live feed.
+The existing five hosted migration versions match source files, including guarded reconciliation of only MCP-generated migration metadata. No destructive harness or SQL-auth fixture runs against hosted data. Vercel's authenticated local CLI verifies the existing project and three public variables in development/preview/production; GitHub `main` remains production and other branches trigger protected previews.
 
-## Boundaries
+Actual runtime smoke used native Supabase Auth v2.197.0, PostgREST v16.5, PostgreSQL 17.11 and Mailpit: seven ordinarily registered/confirmed accounts, six-manager 90-pick season, races/permissions, saved/locked XIs, seven rounds and repeatable champion. This is not a substitute for a real hosted six-person email rehearsal or verified production SMTP.
 
-Data-source rights, logo rights, live scores, and real-time sync are **not solved** by a good frontend. See DATA_SOURCES.md. The current repository does not claim any provider partnership or production integration.
+## Not claimed implemented
+
+No live provider/SLA, native app, league chat, trades, waivers, salary/auction draft, predictions, current-season injury service or universal official-role dataset. No real-money product. Human alpha participation and schedule/eligibility fairness remain validation work rather than fabricated implementation evidence.

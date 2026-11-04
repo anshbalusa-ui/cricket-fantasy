@@ -1,67 +1,53 @@
-# Product requirements document (PRD)
+# Product requirements — Cricket Fantasy
 
-## One sentence
+## Product
 
-A social, season-long fantasy cricket app where groups of friends draft exclusive players, compete head-to-head, and run their own league — starting with Major League Cricket.
+A free, social, season-long fantasy cricket app: friends draft exclusive players, choose an XI, compete head-to-head and finish with a league champion. MLC first, with competition/season entities kept separate for future tournaments.
 
-## Opportunity and assumptions
+The private league is the product: draft night, club identity, rivalries, roster decisions and a title run. [Sleeper fantasy football](https://sleeper.com/fantasy-football) is an experience reference, not an asset/layout source. Draft fantasy cricket already exists; demand and retention are hypotheses to validate, not claims of invention.
 
-Traditional fantasy sports succeed because the shared league is the product: draft night, rivalry, trading, standings and championships. Much fantasy cricket focuses on per-match team selection and giant points leaderboards. Our bet is that a Sleeper-like social private-league workflow will be more engaging for a segment of cricket fans.
+## People
 
-This is a hypothesis, not an assertion that draft fantasy cricket does not exist. Similar offerings already exist; see DATA_SOURCES.md.
+- Commissioner: create a private league, invite the group, start drafting and explicitly replay historical rounds.
+- Manager: draft real cricket players, save an eligible starting XI and inspect transparent head-to-head scoring.
+- New fantasy player: learn snake order, roles, bench behavior, appearances and playoff qualification without a spreadsheet.
 
-## Who it is for
+## Implemented core journey
 
-- **Commissioner:** wants to organize a league of friends without spreadsheets or manual scorekeeping.
-- **Manager:** wants to draft favorite players, manage starters and follow head-to-head scores.
-- **Cricket fan new to fantasy:** understands cricket and needs draft rules and scoring explained in plain language.
+1. Understand the free historical format; register/confirm email, sign in, recover a password and edit the account profile.
+2. Create an MLC 2026 league. Share an expiring invitation; six genuine accounts join/name their teams. Private names/data are not previewed to outsiders.
+3. Inspect real player histories and the published seven-window fixture calendar before drafting.
+4. Commissioner starts a **90-pick snake draft**: six managers draft **15 players each**. The server validates turns/deadlines, reserves eligible roles, enforces per-league exclusivity and preserves picks on reconnect.
+5. Choose **11 starters and 4 bench**: 1 WK, 2 BAT, 2 BOWL, 2 ALL, 4 FLEX. Review the generated initial XI, then save changes in an open round; selections carry forward.
+6. Commissioner locks/replays the recorded window. The server averages each starter's actual appearances, persists contributions and settles matchups/standings.
+7. After five regular round-robin rounds, the top four play semifinals and a final. The champion and frozen XIs persist. Commissioners can recalculate scored rounds after approved source corrections.
 
-## Core user journey
+## Core requirements and boundaries
 
-1. Visitor understands the rules and sees an example matchup.
-2. Commissioner signs in, selects an MLC season and creates a private league.
-3. Commissioner shares an invite link; six managers join and name their fantasy teams.
-4. Managers enter a live snake-draft room and draft ten players each.
-5. Before each fantasy round, managers set eight starters.
-6. Real match data is converted to fantasy points; players see their matchup and standings.
-7. Top teams enter playoffs and a league champion is declared.
+- Six managers, one team per manager in a league. Unique ownership is **within a fantasy league**, not global.
+- Genuine Auth/session/RLS boundaries and transactional join/pick/lock writes; no privileged browser keys or pretend local-storage multiplayer.
+- Current source: 102 real 2026 MLC players, 34 finalized matches and auditable `mlc-v0.1` points. Eligibility is explicitly fantasy-derived except the corroborated keeper classifications; it is not a complete official-role dataset.
+- Source fixture windows are fixed/published, date-only and historical. **Lock & replay** is an explicit historical operation, not a live-feed claim.
+- Compact dark consumer UI: league hub, lobby, player directory/detail, drafting, XIs, matchups, standings, bracket, manager identities and useful loading/empty/error/success behavior.
+- Mobile and desktop get deliberate navigation/layouts. Short role badges retain full accessible labels. No inert fake chat, score, projection or live controls.
+- `/practice` explains the real 15/11/4 format. `/demo` is separately labeled fictional browser-only three-round practice; its state resets on reload and its ratings are not real match statistics.
 
-## Must-have MVP
+## Hosted acceptance is separate
 
-- Auth and accounts; private leagues and one-use or shareable invites.
-- Six managers, exactly one owned copy of each real player **per league**.
-- Snake draft with turn validation, pick history and reconnection support.
-- MLC season/player pool with verified identities and teams.
-- Eight lineup slots: 2 BAT, 2 BOWL, 2 ALL, 1 WK, 1 FLEX; 2 bench.
-- Per-match points ledger and documented scoring policy; replay of 2026 historical data.
-- Pre-published fantasy rounds; whole-round lineup lock; head-to-head and standings.
-- Commissioner-managed draft start, league invites and basic membership controls.
-- Mobile-responsive UX and accessibility fundamentals.
+Existing Supabase/Vercel projects are configured; new source/gameplay tables are deployed with RLS and source counts verified. CLI project access and public environment targets do not confer an app user's session or verify SMTP delivery.
 
-## Later (not MVP)
+The complete multiplayer journey was exercised against real local Supabase Auth/PostgREST/PostgreSQL/Mailpit with normal email confirmation, not admin-confirmed accounts. A full hosted six-manager rehearsal and ordinary-recipient production email remain external acceptance gates. Do not disable confirmation or impersonate users to manufacture a pass.
 
-Waivers and trades, custom scoring, chat, notifications, live feed, automated injury detection, predictions, dynasty, auction drafts, other tournament releases, public leagues, mobile native apps.
+## Later, not disguised as current features
 
-## Explicitly out of scope
+Trades/waivers, chat/notifications, custom scoring, dynasty, auction/salary drafts, licensed live ingestion, injury services, projections, native apps, public leagues and another tournament release. Competition support is modeled cleanly, not force-completed early.
 
-Real-money wagers, entry fees/prizes, betting markets, copied Sleeper assets or branding, scraped proprietary score feeds, pretending mock stats are live.
+Real-money wagers, entry fees/prizes, betting markets, proprietary scraped feeds and copied competitor assets remain out of scope.
 
-## Screens
+## Alpha success targets — not evidence
 
-Home/marketing; sign-in; leagues overview; create/join league; league lobby; draft room; roster/lineup; matchup; league standings; player directory/detail; commissioner settings; historical replay demo.
-
-## UX principles
-
-Fast mobile interaction; visible draft clock and whose turn it is; scoring explainability; clear status of all data (live, finalized, historical, demo); accessible color contrast and keyboard support. Cricket terminology should be familiar but not unexplained.
-
-## MVP product success criteria (targets, not evidence)
-
-- Five independently organized alpha leagues with real group participation.
-- >=70% of invited managers complete the draft.
-- >=60% of drafted managers return after the first fantasy round.
-- No duplicate ownership, unauthorized picks or silent score differences in test/replay.
-- Users can create a league, complete a draft and view scored matchups without manual operator intervention.
-
-## Biggest unknowns to validate
-
-Demand for *season-long* cricket leagues; team/player pool depth for six-manager drafts; fairness of fantasy rounds across an uneven match schedule; legal access to timely real-world data; player/brand imagery permissions; returning activity after matchday.
+- Five independently organized groups complete a real season replay.
+- At least 70% of invited managers finish the draft; at least 60% return after the first round.
+- No duplicate ownership, unauthorized picks or unexplained scoring differences.
+- Validate availability/franchise-exposure fairness and the experimental role/averaging policy with actual groups before freezing competition rules.
+- Verify a production sender, approved quotas, privacy/age policies and timely-data rights before broad release.

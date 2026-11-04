@@ -93,7 +93,14 @@ export function LeagueLobby({ detail }: { detail: LeagueDetail }) {
                 Invite<span className="invite-managers-label"> managers</span>
               </span>
             </Link>
-          ) : undefined
+          ) : (
+            <Link
+              href={`/leagues/${league.id}?tab=draft`}
+              className="button button-primary button-small"
+            >
+              <Icon name="layers" size={16} /> Draft room
+            </Link>
+          )
         }
       />
       {isLobby ? (
@@ -160,8 +167,9 @@ export function LeagueLobby({ detail }: { detail: LeagueDetail }) {
         </div>
       )}
       <div className="future-note">
-        <strong>Draft and scoring are upcoming.</strong> League status does not
-        imply an active draft or live scores. No results are simulated.
+        <strong>Six managers · 15 picks each · starting XI.</strong> Your league
+        uses historical MLC data. Draft turns and lineups are saved on the
+        server; scores are replayed, never presented as live.
       </div>
     </div>
   );

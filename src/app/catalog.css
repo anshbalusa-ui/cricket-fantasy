@@ -1,0 +1,320 @@
+.catalog-panel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.catalog-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.6fr) repeat(3, minmax(110px, 1fr));
+  gap: 12px;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.catalog-controls label {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.catalog-controls input,
+.catalog-controls select {
+  width: 100%;
+  font-size: 12px;
+}
+.catalog-search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.catalog-search-input svg {
+  position: absolute;
+  left: 12px;
+  color: var(--subtle);
+  pointer-events: none;
+}
+.catalog-search-input input {
+  padding-left: 38px;
+}
+.catalog-list-caption,
+.catalog-season-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.catalog-list-caption {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.catalog-season-note {
+  padding: 0 2px;
+}
+.catalog-season-note > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.catalog-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+}
+.catalog-table th {
+  text-align: left;
+  padding: 12px;
+  color: var(--subtle);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--surface-soft);
+}
+.catalog-table td {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+.catalog-table th:first-child {
+  width: 42%;
+  padding-left: 18px;
+}
+.catalog-table tr:hover td {
+  background: var(--surface-raised);
+}
+.catalog-table .catalog-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.catalog-player-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 49px;
+  min-width: 0;
+}
+.catalog-player-link > span:not(.avatar) {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.catalog-player-link strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.catalog-player-link small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 10px;
+}
+.catalog-player-link > svg {
+  display: none;
+  margin-left: auto;
+  flex: none;
+  color: var(--subtle);
+}
+.catalog-average {
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 15px;
+}
+.catalog-mobile-role {
+  display: none;
+}
+.catalog-attribution {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.catalog-attribution p {
+  margin: 5px 0;
+}
+.catalog-attribution a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.catalog-player-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+.catalog-player-hero > div {
+  min-width: 0;
+}
+.catalog-player-hero h1 {
+  margin: 7px 0 12px;
+  font-size: 32px;
+  overflow-wrap: anywhere;
+}
+.catalog-player-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.catalog-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.catalog-match-history {
+  margin-top: 18px;
+}
+.catalog-match-entry {
+  border-top: 1px solid var(--border);
+}
+.catalog-match-entry > summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 78px;
+  padding: 14px 0;
+  cursor: pointer;
+  list-style: none;
+}
+.catalog-match-entry > summary::-webkit-details-marker {
+  display: none;
+}
+.catalog-match-entry > summary > span {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+.catalog-match-entry > summary strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.catalog-match-entry > summary small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.catalog-match-entry > summary > .catalog-match-points {
+  display: grid;
+  gap: 2px;
+  margin-left: auto;
+  text-align: right;
+  color: var(--accent);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.catalog-match-entry[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.catalog-match-audit {
+  padding: 3px 0 20px;
+}
+.catalog-match-audit dl {
+  display: grid;
+  gap: 8px;
+  max-width: 440px;
+  margin: 14px 0;
+  font-size: 12px;
+}
+.catalog-match-audit dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.catalog-match-audit dt {
+  color: var(--muted);
+}
+.catalog-match-audit dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.catalog-breakdown-total {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+@media (max-width: 1100px) {
+  .catalog-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .catalog-table th:first-child {
+    width: 40%;
+  }
+  .catalog-role-column {
+    width: 18%;
+  }
+}
+@media (max-width: 700px) {
+  .catalog-controls {
+    padding: 14px;
+    gap: 12px;
+  }
+  .catalog-search {
+    grid-column: 1/-1;
+  }
+  .catalog-list-caption {
+    padding: 12px 14px;
+    align-items: flex-start;
+  }
+  .catalog-list-caption > span:last-child {
+    text-align: right;
+    max-width: 130px;
+  }
+  .catalog-season-note {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .catalog-role-column,
+  .catalog-extra-column {
+    display: none;
+  }
+  .catalog-table th:first-child {
+    width: 76%;
+    padding-left: 14px;
+  }
+  .catalog-table td {
+    padding: 9px 14px;
+  }
+  .catalog-mobile-role {
+    display: block;
+    margin-top: 2px;
+  }
+  .catalog-mobile-role .badge {
+    font-size: 8px;
+  }
+  .catalog-player-link {
+    gap: 10px;
+    min-height: 65px;
+  }
+  .catalog-player-link small {
+    max-width: 190px;
+  }
+  .catalog-player-hero {
+    gap: 14px;
+  }
+  .catalog-player-hero h1 {
+    font-size: 26px;
+  }
+  .catalog-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .catalog-match-entry > summary {
+    gap: 9px;
+  }
+  .catalog-match-entry > summary strong {
+    font-size: 12px;
+  }
+  .catalog-match-entry > summary small {
+    font-size: 9px;
+  }
+  .catalog-match-entry > summary > .catalog-match-points {
+    font-size: 18px;
+  }
+}

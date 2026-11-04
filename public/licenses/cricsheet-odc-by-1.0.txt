@@ -1,0 +1,10 @@
+Cricsheet data attribution and license notice
+
+Source: Cricsheet, Major League Cricket JSON match data
+Source archive: https://cricsheet.org/downloads/mlc_json.zip
+Format documentation: https://cricsheet.org/format/json/
+Licensing notice: https://cricsheet.org/licensing/
+License: Open Data Commons Attribution License (ODC-BY) 1.0
+License text: https://opendatacommons.org/licenses/by/1.0/
+
+Cricsheet data is licensed under the Open Data Commons Attribution License. This application transforms the source JSON into normalized match statistics, fantasy points, and schedule metadata. The data does not imply endorsement by Cricsheet.

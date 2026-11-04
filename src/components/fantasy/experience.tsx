@@ -1,5 +1,11 @@
 import { Avatar, Badge, Panel } from "@/components/ui/primitives";
 import type { PlayerRole } from "@/lib/fantasy/types";
+import {
+  BENCH_COUNT,
+  LINEUP_SLOTS,
+  SQUAD_SIZE,
+  STARTER_COUNT,
+} from "@/lib/fantasy/lineup";
 import { Icon } from "@/components/ui/icon";
 import "./experience.css";
 
@@ -10,7 +16,13 @@ const roleNames: Record<PlayerRole, string> = {
   WK: "Wicketkeeper",
 };
 
-export function RoleBadge({ role }: { role: PlayerRole }) {
+export function RoleBadge({
+  role,
+  compact = false,
+}: {
+  role: PlayerRole;
+  compact?: boolean;
+}) {
   const tone =
     role === "BAT"
       ? "amber"
@@ -19,7 +31,18 @@ export function RoleBadge({ role }: { role: PlayerRole }) {
         : role === "ALL"
           ? "violet"
           : "mint";
-  return <Badge tone={tone}>{roleNames[role]}</Badge>;
+  return (
+    <Badge tone={tone}>
+      {compact ? (
+        <>
+          <span aria-hidden="true">{role}</span>
+          <span className="sr-only">{roleNames[role]}</span>
+        </>
+      ) : (
+        roleNames[role]
+      )}
+    </Badge>
+  );
 }
 
 export function PlayerIdentity({
@@ -70,159 +93,58 @@ export function RosterRows({
   );
 }
 
-const starterSlots = [
-  "BAT",
-  "BAT",
-  "BOWL",
-  "BOWL",
-  "ALL",
-  "ALL",
-  "WK",
-  "FLEX",
-] as const;
-
-export function RosterPreview({
-  teamName,
-  compact = false,
-}: {
-  teamName: string;
-  compact?: boolean;
-}) {
-  const visibleStarters = compact ? starterSlots.slice(0, 4) : starterSlots;
+export function LineupFormatGuide() {
   return (
     <Panel
-      eyebrow="YOUR SQUAD"
-      title={teamName}
-      action={<Badge tone="amber">After the draft</Badge>}
-      className={`fantasy-preview${compact ? " fantasy-preview-compact" : ""}`}
+      eyebrow="THE SQUAD FORMAT"
+      title="Fifteen picks. Your best XI."
+      action={<Badge tone="mint">11 + 4</Badge>}
+      className="fantasy-preview"
     >
       <div className="fantasy-roster-count">
-        <strong>10 roster spots</strong>
-        <span>Planned league format</span>
+        <strong>{SQUAD_SIZE} roster spots</strong>
+        <span>
+          {STARTER_COUNT} starters · {BENCH_COUNT} bench
+        </span>
       </div>
       <div className="fantasy-lineup-heading">
         <span>
-          <Icon name="shirt" size={14} /> Starting eight
+          <Icon name="shirt" size={14} /> Starting XI
         </span>
-        <small>8 spots</small>
+        <small>{STARTER_COUNT} positions</small>
       </div>
       <ol className="fantasy-slot-list">
-        {visibleStarters.map((role, index) => (
-          <li key={`${role}-${index}`}>
+        {LINEUP_SLOTS.map((slot) => (
+          <li key={slot.id}>
             <span
-              className={`fantasy-slot-role fantasy-slot-${role.toLowerCase()}`}
+              className={`fantasy-slot-role fantasy-slot-${slot.role.toLowerCase()}`}
             >
-              {role}
+              {slot.role}
             </span>
             <span className="fantasy-empty-player">
-              <Icon name="plus" size={15} />
+              <Icon name="shirt" size={15} />
             </span>
             <span className="fantasy-slot-copy">
-              <strong>Open roster spot</strong>
+              <strong>{slot.label}</strong>
               <small>
-                {role === "FLEX" ? "Any eligible role" : roleNames[role]} ·
-                assigned after draft
+                {slot.role === "FLEX"
+                  ? "Any player you own"
+                  : `An owned ${roleNames[slot.role].toLowerCase()}`}
               </small>
-            </span>
-            <span className="fantasy-slot-points">
-              <span aria-hidden="true">—</span>
-              <span className="sr-only">Points unavailable</span>
             </span>
           </li>
         ))}
       </ol>
-      {compact && (
-        <p className="fantasy-more-slots">
-          Four more starters · two bench spots
-        </p>
-      )}
-      {!compact && (
-        <>
-          <div className="fantasy-lineup-heading fantasy-bench-heading">
-            <span>
-              <Icon name="layers" size={14} /> The bench
-            </span>
-            <small>2 spots</small>
-          </div>
-          <ol className="fantasy-slot-list fantasy-bench-list">
-            {[1, 2].map((slot) => (
-              <li key={slot}>
-                <span className="fantasy-slot-role">BN</span>
-                <span className="fantasy-empty-player">
-                  <Icon name="plus" size={15} />
-                </span>
-                <span className="fantasy-slot-copy">
-                  <strong>Bench spot {slot}</strong>
-                  <small>Reserve player · assigned after draft</small>
-                </span>
-                <span className="fantasy-slot-points">
-                  <span aria-hidden="true">—</span>
-                  <span className="sr-only">Points unavailable</span>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </>
-      )}
-      <p className="fantasy-pending-note">
-        Roster ownership and lineup changes become available with multiplayer
-        drafting. These are empty format slots, not player assignments.
-      </p>
-    </Panel>
-  );
-}
-
-export function MatchupPreview({ teamName }: { teamName?: string }) {
-  return (
-    <Panel
-      eyebrow="HEAD TO HEAD"
-      title="Your next matchup"
-      action={<Badge tone="amber">Upcoming</Badge>}
-      className="fantasy-preview"
-    >
-      <div className="fantasy-matchup-meta">
-        <Icon name="calendar" size={14} />
-        <span>Round not scheduled</span>
-        <span className="fantasy-matchup-status">Awaiting fixtures</span>
-      </div>
-      <div className="fantasy-matchup-preview">
-        <div>
-          <Avatar name={teamName ?? "Your team"} size="lg" />
-          <strong>{teamName ?? "Your team"}</strong>
-          <small>Your side</small>
-        </div>
-        <span className="fantasy-matchup-vs">VS</span>
-        <div className="fantasy-opponent">
-          <span className="fantasy-opponent-mark">
-            <Icon name="shield" size={23} />
-          </span>
-          <strong>Opponent unassigned</strong>
-          <small>Schedule pending</small>
-        </div>
-      </div>
-      <div className="fantasy-matchup-score">
-        <strong>
-          <span aria-hidden="true">—</span>
-          <span className="sr-only">Your score unavailable</span>
-        </strong>
-        <span>FANTASY POINTS</span>
-        <strong>
-          <span aria-hidden="true">—</span>
-          <span className="sr-only">Opponent score unavailable</span>
-        </strong>
-      </div>
-      <div className="fantasy-contributions">
-        <Icon name="activity" size={17} />
-        <p>
-          <strong>Every contribution will count.</strong>
-          <span>
-            Player breakdowns appear after match data is imported and fantasy
-            rounds are scored.
-          </span>
-        </p>
+      <div className="fantasy-lineup-heading fantasy-bench-heading">
+        <span>
+          <Icon name="layers" size={14} /> The bench
+        </span>
+        <small>{BENCH_COUNT} reserves</small>
       </div>
       <p className="fantasy-pending-note">
-        No scores, projections or live match status are available yet.
+        Your other four drafted players stay on the bench. Bench contributions
+        do not count. Change your XI in your league’s My Team screen before the
+        round is locked.
       </p>
     </Panel>
   );

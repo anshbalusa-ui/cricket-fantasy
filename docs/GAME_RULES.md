@@ -1,58 +1,72 @@
-# Game rules — provisional v0.1
+# Game rules — settings v2 / scoring `mlc-v0.1`
 
-These rules are initial defaults, **not finalized or deployed**. Validate with 2026 match replay and a group of cricket fans before shipping.
+The playable application uses the user-approved **six-manager, 15-player squad, 11 starters + 4 bench** format. Settings v2 replaces the original ten-player/eight-starter proposal. The experimental `mlc-v0.1` point coefficients below are unchanged; season replay and deterministic calculations do not establish competitive fairness or production live-score readiness.
 
-## League format
+## League and draft
 
-- Free private league, 6 managers for the first playable version.
-- 10 players drafted per manager. 8 starters, 2 bench.
-- Starter slots: 2 BAT (specialist batters), 2 BOWL (bowlers), 2 ALL (all-rounders), 1 WK (wicketkeeper), 1 FLEX (any eligible role).
-- Real player ownership is exclusive **within a fantasy league**, independent across leagues.
-- Snake draft: odd-numbered rounds follow original order; even-numbered rounds reverse it.
-- Commissioner publishes draft and fantasy-round schedules before the season.
-- No captain multiplier, player salary, waivers, trades or custom scoring in v0.1.
+- Free private leagues with six managers. No entry fees, monetary prizes or wagering.
+- Fifteen picks each: **90 total picks**, with exclusive player ownership within a fantasy league, not globally.
+- Snake order: odd rounds follow seats 1–6; even rounds reverse. Seats are assigned by membership join time, then user ID, at commissioner start. This is deterministic, not a claimed random draw.
+- All six managers and a complete imported season are required to start. Membership locks when drafting starts.
+- The app uses a 90-second pick clock. The server accepts 15–300 seconds through the draft API. The database owns deadlines and validates expected pick number, current manager, season eligibility and ownership atomically.
+- Expired turns receive a deterministic, role-safe server auto-pick when a member checks the room/clock. Visible draft rooms poll every five seconds. There is no always-on offline timer worker; a wholly unattended room resolves an expired turn when a member reconnects.
+- Picks cannot exhaust the roles or remaining squad slots needed for any of the six managers to finish a valid XI.
 
-## Fantasy rounds and lineup locking
+## Starting XI and bench
 
-MLC fixtures do not follow one-match-per-team weekly football scheduling.
+Eleven distinct owned players: **1 WK, 2 BAT, 2 BOWL, 2 ALL and 4 FLEX**. A flex slot accepts any eligible role. The other four owned players are benched and contribute zero to the fantasy team.
 
-- Fantasy rounds group consecutive **real match IDs**, set before the league draft and published to managers.
-- Entire starting lineup locks when the first real match in that fantasy round starts. No retroactive changes or late substitutions.
-- Each starter gets their **average fantasy points per eligible appearance during the round**, rather than simply more points for playing twice. A player with no appearance receives 0.
-- Round team total = sum of eight starter values, rounded to one decimal place at display. Keep precise values internally.
-- Example: 58 points and 22 points in two appearances => 40 points in that round.
-- Caveat: averaging addresses match-volume imbalance, but does not fully equalize schedule quality, variance or missing appearances. Test on historical fixture windows before freezing this design.
-- Historical data corrections must recalculate the affected match, player, round and matchup idempotently.
+Roles are fantasy eligibility, not a complete official-position dataset. Seven wicketkeepers have explicit official franchise source URLs; other roles follow the published contribution-derived policy. Inspect a player's eligibility source before interpreting the label as an official cricket role. See [DATA_SOURCES.md](DATA_SOURCES.md).
 
-## Per-match fantasy scoring (default)
+After pick 90, a valid initial XI is generated from draft order. A manager can review/save changes for the current open round. Saved selections carry forward to the next round in which the team participates. Other managers' open XIs are private; all participating XIs become readable when the round locks. Eliminated teams do not submit playoff XIs.
 
-| Action | Points |
-| --- | ---: |
-| Run scored by batter | +1 |
-| Four hit (on top of four runs) | +1 |
-| Six hit (on top of six runs) | +2 |
-| Batter reaches 30 / 50 / 100 runs | +5 / +10 / +20 (highest one only) |
-| Duck: out for zero after facing a ball, except BOWL role | -5 |
-| Bowler-credited wicket | +25 |
-| Bowler takes 3 / 4 / 5+ wickets | +5 / +10 / +20 (highest one only) |
-| Maiden over | +12 |
-| Catch | +8 |
-| Stumping | +12 |
-| Direct-hit run-out | +12 |
-| Run-out assist | +6 |
+## Historical round windows and locking
 
-Boundary bonus is **additional** to runs; wicket bonus excludes run-outs credited to fielders. Exclude leg-byes/byes/wides from batter runs. Non-bowler wicket modes and complex dismissal attribution need explicit importer tests.
+- Current playable season: **2026 MLC historical replay**, not live cricket.
+- Thirty-four source matches over 22 recorded dates form seven chronological windows: five regular fantasy rounds, a semifinal and a final. Same-day source fixtures are never split. The fixed map is in [`data/cricket/mlc-2026/manifest.json`](../data/cricket/mlc-2026/manifest.json) and the pre-draft fixture calendar.
+- Window match counts are **5, 4, 4, 5, 5, 5, 6**. Fantasy playoff windows are not a claim that these are the real MLC semifinal/final fixtures alone.
+- Historical dates have already passed. The commissioner explicitly chooses **Lock & replay** after managers are ready; that single transaction freezes the participating XIs and scores the window. It does not use a fabricated kickoff time or pretend the historical fixtures are live.
+- Managers cannot edit a locked or future unopened XI. Lineup saves and round locks serialize on the league row.
+- Each starter contributes their **average fantasy points per actual eligible appearance in the window**. Playing-XI appearances with zero contribution count; credited substitute-fielding appearances also count. No appearance gives zero. Only starting players contribute.
+- Team total is the sum of **eleven** starter averages. Store full PostgreSQL numeric precision; round to one decimal only for display. For example, 58 and 22 in two appearances give 40 for that starter, not 80.
+- Averaging reduces extra-match volume advantage. It does not remove differences in opponents, availability, rain-shortened matches, rotation or real-franchise playoff exposure. Further fairness validation remains an alpha requirement; the coefficients are experimental.
 
-Scoring deliberately omits strike-rate and economy-rate adjustments until data quality and balanced incentives are verified.
+A future live mode would need verified fixture timestamps and server-enforced first-match locks. It is not implemented by this historical workflow.
 
-## Matchups, standings and playoffs
+## Per-match fantasy scoring
 
-- Each fantasy round pairs managers head-to-head; winner earns 1 win, loser 1 loss; exact tied total is a draw (0.5 standings win for each).
-- Rank regular-season teams by standings win points, then total fantasy points, then head-to-head record if available. Remaining tie -> prepublished deterministic team-id ordering until commissioner-approved tiebreaker replaces it.
-- Target top-4 playoffs if the real fixture schedule supports enough fantasy rounds: semifinals 1 vs 4 and 2 vs 3, then final.
-- For an exactly tied playoff matchup, higher regular-season seed advances.
-- 2027 fixture-based round mapping and playoff round count **must be validated** before real leagues open. Do not promise a full round robin or a specific number of weeks yet.
+| Action                                                          |                       Points |
+| --------------------------------------------------------------- | ---------------------------: |
+| Batter run                                                      |                           +1 |
+| Four, additional to runs                                        |                           +1 |
+| Six, additional to runs                                         |                           +2 |
+| 30 / 50 / 100 batting milestone                                 | +5 / +10 / +20, highest only |
+| Dismissed for zero after facing a ball, except BOWL eligibility |                           -5 |
+| Bowler-credited wicket                                          |                          +25 |
+| 3 / 4 / 5+ wicket haul                                          | +5 / +10 / +20, highest only |
+| Maiden over                                                     |                          +12 |
+| Catch                                                           |                           +8 |
+| Stumping                                                        |                          +12 |
+| Direct run-out credit                                           |                          +12 |
+| Run-out assist                                                  |                           +6 |
 
-## Sources of truth and disputes
+Byes, leg-byes and wides are not batter runs. Run-outs, retired-hurt and other non-bowler dismissals do not become bowler wickets. Super overs are excluded. A full maiden must belong to one bowler; a shared over cannot award a maiden to its final bowler. Tactical retired-out is a dismissal, retired-hurt is not.
 
-Store the immutable source match reference, per-match player stat line, scoring rule version and points breakdown. Mark historical replay scores as historical; live provisional scores (when available later) must be visibly provisional. League administrators cannot manually modify official match statistics.
+Cricsheet fielders do not provide a universal direct-hit flag. The declared adapter policy gives a sole credited run-out fielder direct credit; multiple named fielders receive assisted credit, no guessed direct credit, and a normalization warning. This is an explicit scoring attribution policy, not a claim of independently verified direct-hit technique.
+
+No captain multiplier, salaries, strike/economy-rate adjustments, waivers, trades or custom coefficients are included.
+
+## Head-to-head, standings and playoffs
+
+- Five regular rounds pair each manager with every other exactly once: 15 head-to-head matchups.
+- Win earns one win, exact tied stored totals earn a draw. The UI expresses standings equivalently as **2 league points per win, 1 per draw, 0 per loss**.
+- Rank by league points, regular-season fantasy points for, head-to-head points among teams tied on both, then stable team ID. Displayed rounded equality alone is not a draw.
+- Freeze the top four seeds after Round 5. Semifinals are 1 vs 4 and 2 vs 3; winners meet in the final. An exact playoff tie advances the higher regular-season seed.
+- Only participants receive the next playoff lineup. Round 7 records the champion and completes the league.
+- The regular table excludes playoff scores. Playoff seed/participant identities remain frozen once the bracket has been created; corrections do not silently redraw an already advanced bracket.
+
+## Corrections and audit
+
+Raw source files, SHA-256 checksums, stable source IDs, normalized statistics, scoring version and each point category remain inspectable. Ordinary managers and commissioners cannot edit source cricket statistics through the application.
+
+An authorized operator can re-import corrected stat values with stable identities, then the commissioner can **Recalculate league** from locked XIs. Repeated imports/recalculations must not duplicate ownership, appearances or contributions. Recalculation updates scored results, regular standings and the champion within the frozen bracket; it does not reopen XIs or retrospectively replace playoff participants. Structural identity, eligibility or window changes require explicit version-controlled review/migrations rather than an invisible live-data edit.

@@ -6,7 +6,7 @@ import { PageHeading, Panel } from "@/components/ui/primitives";
 
 export default async function NewLeaguePage() {
   const seasons = (await getAvailableSeasons()).filter(
-    (season) => season.competition.slug === "mlc",
+    (season) => season.competition.slug === "mlc" && season.dataAvailable,
   );
   return (
     <div className="app-page">
@@ -16,7 +16,7 @@ export default async function NewLeaguePage() {
       <PageHeading
         eyebrow="CREATE A PRIVATE SPACE"
         title="New league"
-        description="Choose your MLC season and give your group a home base."
+        description="Six managers. Fifteen drafted players each. Choose your historical MLC season."
       />
       <Panel
         eyebrow="LEAGUE SETUP"
@@ -31,8 +31,9 @@ export default async function NewLeaguePage() {
           <CreateLeagueForm seasons={seasons} />
         ) : (
           <div className="app-alert" role="status">
-            There are no MLC seasons available to select right now. Please check
-            back later.
+            No verified MLC replay is available to select right now. A season
+            needs its real player pool and historical match data before leagues
+            can open.
           </div>
         )}
       </Panel>

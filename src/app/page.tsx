@@ -3,13 +3,14 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Avatar, Badge, Brand } from "@/components/ui/primitives";
 import { Icon } from "@/components/ui/icon";
+import { BENCH_COUNT, SQUAD_SIZE, STARTER_COUNT } from "@/lib/fantasy/lineup";
 
 const lineupFormat = [
   { role: "BAT", count: 2, tone: "amber" },
   { role: "BOWL", count: 2, tone: "blue" },
   { role: "ALL", count: 2, tone: "violet" },
   { role: "WK", count: 1, tone: "mint" },
-  { role: "FLEX", count: 1, tone: "neutral" },
+  { role: "FLEX", count: 4, tone: "neutral" },
 ] as const;
 
 export default function HomePage() {
@@ -26,8 +27,8 @@ export default function HomePage() {
               Your cricket. <span>Your league.</span>
             </h1>
             <p className="hero-description">
-              A private home for your cricket group. Build your MLC league,
-              choose your team identity, and bring all six managers together.
+              Draft real cricket players. Choose your XI. Play your friends
+              head-to-head, from draft night to the championship.
             </p>
             <div className="hero-actions">
               <Link
@@ -99,7 +100,7 @@ export default function HomePage() {
               <div className="preview-lineup">
                 <div className="preview-lineup-heading">
                   <strong>THE LINEUP BLUEPRINT</strong>
-                  <span>Planned format</span>
+                  <span>Starting XI format</span>
                 </div>
                 <div className="preview-role-grid">
                   {lineupFormat.map(({ role, count, tone }) => (
@@ -112,21 +113,23 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p>
-                  <strong>8 starters</strong>
+                  <strong>{STARTER_COUNT} starters</strong>
                   <span>+</span>
-                  <strong>2 bench</strong>
+                  <strong>{BENCH_COUNT} bench</strong>
                   <span className="preview-lineup-future">After the draft</span>
                 </p>
               </div>
               <div className="roster-notice">
                 <Icon name="shield" size={15} />
                 <span>
-                  Player picks &amp; scoring are <strong>coming soon</strong>
+                  Exclusive picks. A recorded season.{" "}
+                  <strong>One champion.</strong>
                 </span>
               </div>
             </div>
             <div className="sample-note">
-              Fictional names · Product concept, not live league data
+              Fictional names · Illustrative league identity, not private user
+              data
             </div>
           </div>
         </section>
@@ -146,14 +149,19 @@ export default function HomePage() {
             <span className="note-number">02</span>
             <p>
               <strong>A clear first-season shape</strong>
-              <span>Designed for 6 managers and 10 players per team.</span>
+              <span>
+                6 managers. {SQUAD_SIZE} picks each. Your best XI every round.
+              </span>
             </p>
           </div>
           <div>
             <span className="note-number">03</span>
             <p>
-              <strong>Room to build</strong>
-              <span>Draft and fantasy scoring are planned, not live yet.</span>
+              <strong>Go the whole season</strong>
+              <span>
+                Historical matchups, auditable points and a top-four
+                championship.
+              </span>
             </p>
           </div>
         </section>
@@ -168,14 +176,11 @@ export default function HomePage() {
                 with an invitation.
               </h2>
               <p>
-                Set up a private home for your cricket crew now. The manager and
-                roster limits are the intended format; drafting and scoring
-                experiences are still in development.
+                Bring your cricket crew together, draft exclusive players and
+                set a balanced XI. Replay a real MLC season with head-to-head
+                rounds and every fantasy point explained.
               </p>
-              <Link
-                href="/sign-up?next=%2Fleagues%2Fnew"
-                className="text-link"
-              >
+              <Link href="/sign-up?next=%2Fleagues%2Fnew" className="text-link">
                 Get your league started <Icon name="arrowUpRight" size={15} />
               </Link>
             </div>
@@ -199,9 +204,10 @@ export default function HomePage() {
               <li>
                 <span>03</span>
                 <div>
-                  <strong>Build the season together</strong>
+                  <strong>Draft. Set your XI. Compete.</strong>
                   <p>
-                    Player drafts and scoring are planned for a future release.
+                    Fifteen rounds in the draft room. Five league rounds. A
+                    playoff champion.
                   </p>
                 </div>
                 <Icon name="trophy" size={18} />

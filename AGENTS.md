@@ -3,13 +3,15 @@
 You are working in `anshbalusa-ui/cricket-fantasy`, a public GitHub repository for a free, season-long, draft-based fantasy cricket product. Treat this repository as the source of truth and inspect existing code **before** editing. Follow the current milestone and acceptance criteria from the user's task.
 
 ## Product and scope
+
 - Product goal: the social private-league fantasy experience of traditional fantasy football, designed originally for cricket. MLC first; IPL and other T20 competitions later.
-- First MVP: 6 managers per private league, 10 players drafted per manager (8 starter slots, 2 bench), exclusive ownership **within each league**, snake draft, historical replay scoring, head-to-head rounds, standings and playoffs.
+- First playable season: 6 managers per private league, 15 players drafted per manager (11 starter slots, 4 bench; settings v2), exclusive ownership **within each league**, 90-pick snake draft, historical replay scoring, head-to-head rounds, standings and playoffs. This user-approved format replaces the original 10-player/8-starter proposal.
 - This is free-to-play only. Do not implement real-money betting, contests, entry fees, or prizes.
 - Use an original aesthetic. The Sleeper product is an experience reference, **not** an asset source. Do not copy its UI, brand, text, icons or graphics.
 - Existing `/demo` and `src/lib/demo/fixtures.ts` are **fictional** demonstrations. Do not present them as real cricket data or real multiplayer.
 
 ## Read first
+
 1. `README.md`
 2. `docs/PRODUCT.md`
 3. `docs/ROADMAP.md`
@@ -22,6 +24,7 @@ You are working in `anshbalusa-ui/cricket-fantasy`, a public GitHub repository f
 Docs describe intent, not necessarily implemented behavior. Do not claim a feature works unless it actually works and has been checked.
 
 ## Technical priorities
+
 - Preserve the Next.js App Router / TypeScript foundation and mobile-responsive dark UI unless a change is required.
 - Domain logic belongs in tested TypeScript modules; keep provider ingestion separate from fantasy scoring and user league state.
 - Intended backend is Supabase Auth + Postgres, with Vercel as a future deployment target. No existing Supabase project or live-score provider should be assumed.
@@ -33,6 +36,7 @@ Docs describe intent, not necessarily implemented behavior. Do not claim a featu
 - Support legitimate loading, failure, empty, auth and authorization states. No inert buttons that pretend to work.
 
 ## Implementation workflow
+
 1. Inspect the repository and existing GitHub issues; briefly identify current status and the requested milestone.
 2. Implement actual end-to-end features, not another plan or superficial mockup.
 3. Prefer incremental commits on a dedicated branch and a reviewable PR; do not force-push or rewrite published history.
@@ -41,6 +45,7 @@ Docs describe intent, not necessarily implemented behavior. Do not claim a featu
 6. Final delivery: changed files, tests and exact results, branch/PR/commit links, verified working behaviors, known limits, and user-only actions needed next.
 
 ## Feature-specific quality bar
+
 - A private league must only be visible to authorized users.
 - Commissioner-specific writes must be restricted server-side.
 - Joining a full league must fail atomically; simultaneous joins must not exceed league capacity.
